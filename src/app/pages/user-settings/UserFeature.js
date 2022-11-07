@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Form, Col, Row } from "react-bootstrap";
 import API from "../../helpers/devApi";
 import { useSelector } from "react-redux";
-import { swalError } from "../../helpers/swal";
+import { swalConfirm, swalError, swalSuccess } from "../../helpers/swal";
 import { Select } from "antd";
 
 const { Option } = Select;
@@ -54,6 +54,23 @@ export default function UserFeature() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (Object.keys(menuType).length > 0) {
+      const payload = {
+        role_id: roleId,
+        menus: systemFeatureId,
+        accessible: true,
+      };
+      await API.post("/sys_role_menu", payload)
+        .then((res) => {
+          if (res.data.success) {
+            swalSuccess("Successfully Added");
+          } else {
+            swalError("something went wrong");
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          swalError("something went wrong");
+        });
     } else {
       swalError("Select Module First");
     }
