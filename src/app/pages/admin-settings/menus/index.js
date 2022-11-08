@@ -9,6 +9,7 @@ import { Field, Form, Formik } from "formik";
 import { Input } from "../../../../_metronic/_partials/controls";
 import * as Yup from "yup";
 import { swalConfirm, swalError, swalSuccess } from "../../../helpers/swal";
+import IconModal from "./IconModal";
 
 const _init = {
   menu_name: "",
@@ -26,6 +27,8 @@ const Menus = () => {
   const [treeData, setTreeData] = useState([]);
   const [parentMenu, setParentMenu] = useState([]);
   const [selectedRow, setSelectedRow] = useState({});
+  const [showDetails, setShowDetails] = useState(false);
+  const [selected, setSelected] = useState("");
   const nodeInfo = (row) => console.log(row);
 
   const getMenus = async () => {
@@ -57,7 +60,7 @@ const Menus = () => {
     const payload = {
       menu_name: values.menu_name,
       menu_url: values.menu_url,
-      menu_icon_url: values.menu_icon_url,
+      menu_icon_url: selected ?? values.menu_icon_url,
       menu_order: 0,
       parent_menu: values.parent_menu,
       module_id: values.module_id,
@@ -81,7 +84,7 @@ const Menus = () => {
           swalError("something went wrong");
         });
     } else {
-      await API.post("/sys_menus", values)
+      await API.post("/sys_menus", payload)
         .then(async (res) => {
           if (res.data.success) {
             swalSuccess();
@@ -169,13 +172,31 @@ const Menus = () => {
                     label="Menu URL"
                   />
                 </div>
-                <div className="mb-3">
-                  <Field
-                    name="menu_icon_url"
-                    component={Input}
-                    placeholder="Enter Menu Icon URL"
-                    label="Menu Icon URL"
-                  />
+                <div className="mb-3 d-flex gap-5">
+                  <div className="w-100">
+                    <Field
+                      name="menu_icon_url"
+                      component={Input}
+                      value={selected ? selected : values.menu_icon_url}
+                      placeholder="Enter Menu Icon URL"
+                      label="Menu Icon URL"
+                    />
+                  </div>
+                  <button
+                    className="btn btn-primary"
+                    type="button"
+                    onClick={() => {
+                      setShowDetails(true);
+                    }}
+                    style={{
+                      height: "45px",
+                      width: "45px",
+                      marginTop: "25px",
+                      marginLeft: "25px",
+                    }}
+                  >
+                    <i className="fa-solid fa-ellipsis"></i>
+                  </button>
                 </div>
 
                 <div className="mb-3">
@@ -310,6 +331,13 @@ const Menus = () => {
           )}
         </div>
       </div>
+
+      <IconModal
+        showDetails={showDetails}
+        setShowDetails={setShowDetails}
+        selected={selected}
+        setSelected={setSelected}
+      />
     </div>
   );
 };
