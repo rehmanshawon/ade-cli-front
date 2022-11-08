@@ -9,6 +9,7 @@ export default function BasePage() {
   // pages lists
   const UserSettingsPage = lazy(() => import("./pages/user-settings"));
   const UserRolePage = lazy(() => import("./pages/users"));
+  const AdminSettingsPage = lazy(() => import("./pages/admin-settings"));
 
   return (
     <Suspense fallback={<LayoutSplashScreen />}>
@@ -16,9 +17,10 @@ export default function BasePage() {
         {/* {<Redirect exact from="/" to="/dashboard" />} */}
         <Redirect exact from="/" to="/dashboard" />
 
-        <Route path="/dashboard" component={AllDashboardPages} />
+        <Route exact path="/dashboard" component={AllDashboardPages} />
         <Route path="/user-setting" component={UserSettingsPage} />
         <Route path="/users" component={UserRolePage} />
+        <Route path="/admin-settings" component={AdminSettingsPage} />
 
         {/* <Redirect to="error/error-v1" /> */}
       </Switch>

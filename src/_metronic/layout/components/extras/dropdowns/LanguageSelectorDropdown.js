@@ -5,19 +5,21 @@ import { Dropdown, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import API from "../../../../../app/helpers/devApi";
-import { changeMenu } from "../../../../../app/modules/Auth/redux/authReducer";
+import {
+  changeMenu,
+  setModules,
+} from "../../../../../app/modules/Auth/redux/authReducer";
 import { DropdownTopbarItemToggler } from "../../../../_partials/dropdowns";
 
 export function LanguageSelectorDropdown() {
   const history = useHistory();
   const dispatch = useDispatch();
-  const { menuType } = useSelector((state) => state.auth);
-  const [sysModules, setSysModules] = useState([]);
+  const { menuType, modules } = useSelector((state) => state.auth);
 
   const getModuleList = async () => {
     await API.get("/sys_modules").then((res) => {
       if (res.data.success) {
-        setSysModules(res.data.data.sys_modules);
+        dispatch(setModules(res.data.data.sys_modules ?? []));
       }
     });
   };
@@ -47,9 +49,9 @@ export function LanguageSelectorDropdown() {
       </Dropdown.Toggle>
       <Dropdown.Menu className="p-0 m-0 dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround">
         <ul className="navi navi-hover py-4">
-          {sysModules &&
-            sysModules.length > 0 &&
-            sysModules.map((item, i) => (
+          {modules &&
+            modules.length > 0 &&
+            modules.map((item, i) => (
               <li
                 className={clsx("navi-item", {
                   active: true,

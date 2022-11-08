@@ -10,6 +10,7 @@ const initialState = {
     ? JSON.parse(localStorage.getItem("menuType"))
     : "",
   menu: [],
+  modules: [],
 };
 
 export const loginUser = createAsyncThunk(
@@ -63,6 +64,9 @@ export const authSlice = createSlice({
     setMenu: (state, action) => {
       state.menu = action.payload;
     },
+    setModules: (state, action) => {
+      state.modules = action.payload;
+    },
   },
   extraReducers: {
     [loginUser.pending]: (state, action) => {
@@ -87,6 +91,7 @@ export const {
   changePhoto,
   logout,
   setMenu,
+  setModules,
   changeMenu,
   increment,
 } = authSlice.actions;
