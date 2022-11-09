@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from "react";
-import SortableTree from "react-sortable-tree";
+import SortableTree, { addNodeUnderParent } from "react-sortable-tree";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import { toAbsoluteUrl } from "../../../../_metronic/_helpers";
@@ -29,7 +29,30 @@ const Menus = () => {
   const [selectedRow, setSelectedRow] = useState({});
   const [showDetails, setShowDetails] = useState(false);
   const [selected, setSelected] = useState("");
-  const nodeInfo = (row) => console.log(row);
+  const [values, setValues] = useState(treeData);
+
+  const nodeInfo = (treeNode) => {
+    for (let i = 0; i < treeNode.length; i++) {
+      treeNode[i].children = getRecure(treeNode[i]);
+    }
+
+    console.log({ treeNode });
+  };
+
+  // recursive
+  const getRecure = (item) => {
+    return (
+      item.children &&
+      item.children.length > 0 &&
+      item.children.map((child) => {
+        if (child.parent_menu != item.id) {
+          child.parent_menu = item.id;
+        }
+        getRecure(child.children);
+        return child;
+      })
+    );
+  };
 
   const getMenus = async () => {
     await API.get("/sys_menus").then((res) => {
@@ -42,7 +65,7 @@ const Menus = () => {
   const getParentMenus = async () => {
     await API.get(`/sys_menus/${menuType.id}/0`).then((res) => {
       if (res.data.success) {
-        setParentMenu(res.data.data);
+        setParentMenu(res.data.data.sys_menus);
       }
     });
   };
@@ -264,9 +287,11 @@ const Menus = () => {
             <SortableTree
               treeData={treeData}
               maxDepth={2}
+              get
               onChange={(treeData) => {
+                console.log({ treeData });
                 setTreeData(treeData);
-                console.log(treeData);
+                nodeInfo(treeData);
               }}
               generateNodeProps={(row) => {
                 return {
@@ -282,7 +307,6 @@ const Menus = () => {
                         verticalAlign: "middle",
                       }}
                       onClick={() => {
-                        nodeInfo(row);
                         setEdit(true);
                         setSelectedRow(row.node);
                       }}

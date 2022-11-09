@@ -80,7 +80,7 @@ export function AsideMenuList({ layoutProps }) {
         <NavLink className="menu-link" to={`/${menu_url}`}>
           <span className="svg-icon menu-icon">
             {menu_icon_url ? (
-              <i className={menu_icon_url}>
+              <i className={`text-primary ${menu_icon_url}`}>
                 <span />
               </i>
             ) : (

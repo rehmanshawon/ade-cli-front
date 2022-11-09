@@ -29,7 +29,7 @@ export default function UserFeature() {
     if (menuType && Object.keys(menuType).length > 0) {
       await API.get(`/sys_menus/${menuType.id}/0`).then((res) => {
         if (res.data.success) {
-          setUserModule(res.data.data);
+          setUserModule(res.data.data.sys_menus);
         } else {
           setUserModule([]);
         }
