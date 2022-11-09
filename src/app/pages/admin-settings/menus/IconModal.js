@@ -1,15 +1,25 @@
 import React from "react";
+import { useState } from "react";
 import { Modal } from "react-bootstrap";
 import { icons } from "../../../../data/fontAwesome";
 
 const IconModal = ({ showDetails, setShowDetails, setSelected, selected }) => {
+  const icon = [...icons];
+
+  const [searchList, setSearchList] = useState(icon ?? []);
+  const [search, setSearch] = useState("");
+
+  const handleSearch = searchList.filter((icon) => {
+    return icon.toLowerCase().includes(search.toLowerCase());
+  });
+
   return (
     <Modal
       show={showDetails}
       onHide={() => {
         setShowDetails(false);
       }}
-      size="md"
+      size="lg"
       aria-labelledby="example-modal-sizes-title-lg"
       centered={false}
     >
@@ -25,11 +35,31 @@ const IconModal = ({ showDetails, setShowDetails, setSelected, selected }) => {
       </div>
 
       <Modal.Body>
-        <div style={{ height: "500px", overflowY: "auto" }} className="row">
-          {icons &&
-            icons.length > 0 &&
-            icons.map((item, i) => (
-              <div className="col-md-2 mb-2" key={i}>
+        <div className="mb-5">
+          <input
+            className="form-control"
+            placeholder="search"
+            onChange={(e) => setSearch(e.target.value)}
+            value={search}
+          />
+        </div>
+        <div
+          style={{
+            height: "500px",
+            overflowY: "auto",
+            gap: "10px",
+            justifyContent: "center",
+          }}
+          className="row"
+        >
+          {handleSearch &&
+            handleSearch.length > 0 &&
+            handleSearch.map((item, i) => (
+              <div
+                className="col-md-3 mb-2 btn btn-default"
+                style={{ height: "120px", width: "120px" }}
+                key={i}
+              >
                 <button
                   className={
                     selected == item ? "btn btn-primary" : "btn btn-default"
@@ -40,7 +70,8 @@ const IconModal = ({ showDetails, setShowDetails, setSelected, selected }) => {
                     setShowDetails(false);
                   }}
                 >
-                  <i className={item}></i>
+                  <i className={`mb-5 ${item}`}></i>
+                  <div>{item}</div>
                 </button>
               </div>
             ))}

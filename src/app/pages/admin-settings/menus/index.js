@@ -26,7 +26,7 @@ const Menus = () => {
   const [treeData, setTreeData] = useState([]);
   const [parentMenu, setParentMenu] = useState([]);
   const [selectedRow, setSelectedRow] = useState({});
-  const [showDetails, setShowDetails] = useState(false);
+  const [showDetails, setShowDetails] = useState(true);
   const [selected, setSelected] = useState("");
 
   const nodeInfo = (treeNode) => {
