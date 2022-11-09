@@ -1,13 +1,12 @@
-import React, { useEffect, useMemo } from "react";
-import SortableTree, { addNodeUnderParent } from "react-sortable-tree";
-import { useSelector } from "react-redux";
-import { useState } from "react";
-import { toAbsoluteUrl } from "../../../../_metronic/_helpers";
-import SVG from "react-inlinesvg";
-import API from "../../../helpers/devApi";
 import { Field, Form, Formik } from "formik";
-import { Input } from "../../../../_metronic/_partials/controls";
+import React, { useEffect, useState } from "react";
+import SVG from "react-inlinesvg";
+import { useSelector } from "react-redux";
+import SortableTree from "react-sortable-tree";
 import * as Yup from "yup";
+import { toAbsoluteUrl } from "../../../../_metronic/_helpers";
+import { Input } from "../../../../_metronic/_partials/controls";
+import API from "../../../helpers/devApi";
 import { swalConfirm, swalError, swalSuccess } from "../../../helpers/swal";
 import IconModal from "./IconModal";
 
@@ -29,7 +28,6 @@ const Menus = () => {
   const [selectedRow, setSelectedRow] = useState({});
   const [showDetails, setShowDetails] = useState(false);
   const [selected, setSelected] = useState("");
-  const [values, setValues] = useState(treeData);
 
   const nodeInfo = (treeNode) => {
     for (let i = 0; i < treeNode.length; i++) {

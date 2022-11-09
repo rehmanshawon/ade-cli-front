@@ -1,5 +1,6 @@
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
 import React, { useEffect } from "react";
+import { useMemo } from "react";
 import SVG from "react-inlinesvg";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
@@ -17,6 +18,12 @@ export function AsideMenuList({ layoutProps }) {
   };
   const { menu, menuType } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const menus = useMemo(() => menu, [menu]);
+
+  const ordering = [...menus];
+  // ordering.sort((a, b) => b.menu_order - a.menu_order);
+
+  // console.log({ ordering });
 
   const getMenu = async (menuType) => {
     await API.get(`/sys_menus?field=module_id&search=${menuType}`).then(
@@ -34,6 +41,7 @@ export function AsideMenuList({ layoutProps }) {
 
   const renderMenuItem = (item) => {
     const { menu_name, menu_url, children, menu_icon_url, id, ...rest } = item;
+    const ordering = [...children];
 
     if (item.children.length > 0) {
       return (
@@ -63,7 +71,11 @@ export function AsideMenuList({ layoutProps }) {
               </li>
 
               {/*begin::2 Level*/}
-              {item.children?.map((submenu) => renderMenuItem(submenu))}
+              {ordering &&
+                ordering?.length > 0 &&
+                ordering
+                  ?.sort((a, b) => a.menu_order - b.menu_order)
+                  ?.map((submenu) => renderMenuItem(submenu))}
               {/*end::2 Level*/}
             </ul>
           </div>
@@ -100,7 +112,11 @@ export function AsideMenuList({ layoutProps }) {
       {/* begin::Menu Nav */}
 
       <ul className={`menu-nav ${layoutProps.ulClasses}`}>
-        {menu.map((menu, i) => renderMenuItem(menu))}
+        {ordering &&
+          ordering?.length > 0 &&
+          ordering
+            ?.sort((a, b) => a.menu_order - b.menu_order)
+            ?.map((menu, i) => renderMenuItem(menu))}
       </ul>
     </>
   );
