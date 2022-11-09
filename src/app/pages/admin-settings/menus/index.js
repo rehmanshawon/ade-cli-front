@@ -14,7 +14,6 @@ const _init = {
   menu_name: "",
   menu_url: "",
   menu_icon_url: "",
-  menu_order: 0,
   parent_menu: 0,
   module_id: undefined,
 };
@@ -26,16 +25,18 @@ const Menus = () => {
   const [treeData, setTreeData] = useState([]);
   const [parentMenu, setParentMenu] = useState([]);
   const [selectedRow, setSelectedRow] = useState({});
-  const [showDetails, setShowDetails] = useState(true);
+  const [showDetails, setShowDetails] = useState(false);
   const [selected, setSelected] = useState("");
 
-  const nodeInfo = (treeNode) => {
+  // onchange menus order
+  const nodeInfo = async (treeNode) => {
     for (let i = 0; i < treeNode.length; i++) {
       treeNode[i].children = getRecure(treeNode[i]);
       treeNode[i].menu_order = i;
+      treeNode[i].parent_menu = 0;
     }
 
-    console.log({ treeNode });
+    setTreeData(treeNode);
   };
 
   // recursive
@@ -54,6 +55,23 @@ const Menus = () => {
     );
   };
 
+  // save menues
+  const saveTree = async () => {
+    await API.patch("/sys_menus", treeData)
+      .then(async (res) => {
+        if (res.data.success) {
+          swalSuccess("Saved Menus");
+          await getMenus();
+        } else {
+          swalError("something went wrong");
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        swalError("something went wrong");
+      });
+  };
+
   const getMenus = async () => {
     await API.get("/sys_menus").then((res) => {
       if (res.data.success) {
@@ -62,6 +80,7 @@ const Menus = () => {
     });
   };
 
+  // get parent menu
   const getParentMenus = async () => {
     await API.get(`/sys_menus/${menuType.id}/0`).then((res) => {
       if (res.data.success) {
@@ -286,11 +305,9 @@ const Menus = () => {
           <div style={{ height: 450 }}>
             <SortableTree
               treeData={treeData}
-              // maxDepth={2}
+              maxDepth={3}
               get
               onChange={(treeData) => {
-                console.log({ treeData });
-                setTreeData(treeData);
                 nodeInfo(treeData);
               }}
               generateNodeProps={(row) => {
@@ -346,7 +363,7 @@ const Menus = () => {
             <div style={{ display: "flex", justifyContent: "center" }}>
               <button
                 type="button"
-                //   onClick={handleSubmit}
+                onClick={saveTree}
                 className="btn btn-primary btn-elevate mt-5"
               >
                 Save Tree
