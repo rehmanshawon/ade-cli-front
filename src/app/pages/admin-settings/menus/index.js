@@ -48,7 +48,7 @@ const Menus = () => {
         if (child.parent_menu != item.id) {
           child.parent_menu = item.id;
         }
-        getRecure(child.children);
+        getRecure(child);
         return child;
       })
     );
@@ -286,7 +286,7 @@ const Menus = () => {
           <div style={{ height: 450 }}>
             <SortableTree
               treeData={treeData}
-              maxDepth={2}
+              // maxDepth={2}
               get
               onChange={(treeData) => {
                 console.log({ treeData });
