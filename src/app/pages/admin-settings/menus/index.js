@@ -306,7 +306,6 @@ const Menus = () => {
             <SortableTree
               treeData={treeData}
               maxDepth={3}
-              get
               onChange={(treeData) => {
                 nodeInfo(treeData);
               }}
