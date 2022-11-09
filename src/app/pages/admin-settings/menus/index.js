@@ -34,6 +34,7 @@ const Menus = () => {
   const nodeInfo = (treeNode) => {
     for (let i = 0; i < treeNode.length; i++) {
       treeNode[i].children = getRecure(treeNode[i]);
+      treeNode[i].menu_order = i;
     }
 
     console.log({ treeNode });
@@ -44,10 +45,11 @@ const Menus = () => {
     return (
       item.children &&
       item.children.length > 0 &&
-      item.children.map((child) => {
+      item.children.map((child, i) => {
         if (child.parent_menu != item.id) {
           child.parent_menu = item.id;
         }
+        child.menu_order = i;
         getRecure(child);
         return child;
       })
