@@ -2,11 +2,20 @@ import React from "react";
 import { useState } from "react";
 import { Modal } from "react-bootstrap";
 import { icons } from "../../../../data/fontAwesome";
+import SVG from "react-inlinesvg";
+import { toAbsoluteUrl } from "../../../../_metronic/_helpers";
+
+function importAll(r) {
+  return r.keys().map(r);
+}
 
 const IconModal = ({ showDetails, setShowDetails, setSelected, selected }) => {
   const icon = [...icons];
 
-  const [searchList, setSearchList] = useState(icon ?? []);
+  const filenames = importAll(require.context("./all", false, /\.(svg)$/));
+
+  console.log({ filenames });
+  const [searchList, setSearchList] = useState(filenames ?? []);
   const [search, setSearch] = useState("");
 
   const handleSearch = searchList.filter((icon) => {
@@ -70,8 +79,9 @@ const IconModal = ({ showDetails, setShowDetails, setSelected, selected }) => {
                     setShowDetails(false);
                   }}
                 >
-                  <i className={`mb-5 ${item}`}></i>
-                  <div>{item}</div>
+                  <span className="" style={{ fontSize: "30px" }}>
+                    <SVG src={toAbsoluteUrl(item)} />
+                  </span>
                 </button>
               </div>
             ))}
