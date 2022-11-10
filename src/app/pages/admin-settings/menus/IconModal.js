@@ -14,7 +14,6 @@ const IconModal = ({ showDetails, setShowDetails, setSelected, selected }) => {
 
   const filenames = importAll(require.context("./all", false, /\.(svg)$/));
 
-  console.log({ filenames });
   const [searchList, setSearchList] = useState(filenames ?? []);
   const [search, setSearch] = useState("");
 

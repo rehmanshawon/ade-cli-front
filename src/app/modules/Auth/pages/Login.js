@@ -3,7 +3,10 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
-import { loginUser } from "../redux/authReducer";
+import { login } from "../redux/authCrud";
+import * as auth from "../redux/authRedux";
+import { connect } from "react-redux";
+import { FormattedMessage, injectIntl } from "react-intl";
 
 /*
   Formik+YUP:
@@ -16,14 +19,15 @@ const initialValues = {
 };
 
 function Login(props) {
+  const { intl } = props;
   const dispatch = useDispatch();
-  const { user, loading, error } = useSelector((state) => state.auth);
+  const { authToken, loading, error } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (user.length !== 0) {
+    if (authToken) {
       props.history.push("/dashboard");
     }
-  }, [user, props.history]);
+  }, [authToken, props.history]);
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string()
@@ -51,9 +55,23 @@ function Login(props) {
 
   const formik = useFormik({
     initialValues,
+
     validationSchema: LoginSchema,
-    onSubmit: (values, { resetForm }) => {
-      dispatch(loginUser(values));
+    onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
+      login(values.email, values.password)
+        .then(({ data: { data } }) => {
+          props.login(data?.access_token);
+        })
+        .catch(() => {
+          setStatus(
+            intl.formatMessage({
+              id: "AUTH.VALIDATION.INVALID_LOGIN",
+            })
+          );
+        })
+        .finally(() => {
+          setSubmitting(false);
+        });
       resetForm();
     },
   });
@@ -62,6 +80,9 @@ function Login(props) {
     <div className="login-form login-signin" id="kt_login_signin_form">
       {/* begin::Head */}
       <div className="text-center mb-10 mb-lg-20">
+        <h3 className="font-size-h1">
+          <FormattedMessage id="AUTH.LOGIN.TITLE" />
+        </h3>
         <h3 className="font-size-h1">Sign In</h3>
       </div>
       {/* end::Head */}
@@ -143,5 +164,4 @@ function Login(props) {
   );
 }
 
-export default Login;
-// export default injectIntl(connect(null)(Login));
+export default injectIntl(connect(null, auth.actions)(Login));

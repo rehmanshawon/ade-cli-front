@@ -1,13 +1,15 @@
 import { Field, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import SVG from "react-inlinesvg";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import SortableTree from "react-sortable-tree";
 import * as Yup from "yup";
 import { toAbsoluteUrl } from "../../../../_metronic/_helpers";
 import { Input } from "../../../../_metronic/_partials/controls";
 import API from "../../../helpers/devApi";
 import { swalConfirm, swalError, swalSuccess } from "../../../helpers/swal";
+import { getMenuByModule } from "../../../modules/Auth/redux/authCrud";
+import { actions } from "../../../modules/Auth/redux/authRedux";
 import IconModal from "./IconModal";
 
 const _init = {
@@ -19,10 +21,14 @@ const _init = {
 };
 
 const Menus = () => {
-  const { menuType, modules } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const menuType =
+    localStorage.getItem("menuType") &&
+    JSON.parse(localStorage.getItem("menuType"));
+  const { modules, menu } = useSelector((state) => state.auth);
   const [menuData, setMenuData] = useState(_init);
   const [edit, setEdit] = useState(false);
-  const [treeData, setTreeData] = useState([]);
+  const [treeData, setTreeData] = useState(menu ?? []);
   const [parentMenu, setParentMenu] = useState([]);
   const [selectedRow, setSelectedRow] = useState({});
   const [showDetails, setShowDetails] = useState(false);
@@ -55,13 +61,23 @@ const Menus = () => {
     );
   };
 
+  const getMenu = async () => {
+    if (menuType?.id) {
+      await getMenuByModule(menuType.id).then((res) => {
+        if (res.data.success) {
+          dispatch(actions.menu(res?.data.data?.sys_menus));
+        }
+      });
+    }
+  };
+
   // save menues
   const saveTree = async () => {
     await API.patch("/sys_menus", treeData)
       .then(async (res) => {
         if (res.data.success) {
           swalSuccess("Saved Menus");
-          await getMenus();
+          await getMenu();
         } else {
           swalError("something went wrong");
         }
@@ -114,7 +130,7 @@ const Menus = () => {
           if (res.data.success) {
             swalSuccess();
             action.resetForm();
-            await getMenus();
+            await getMenu();
             setEdit(false);
             setSelectedRow({});
           } else {
@@ -131,7 +147,7 @@ const Menus = () => {
           if (res.data.success) {
             swalSuccess();
             action.resetForm();
-            await getMenus();
+            await getMenu();
             setEdit(false);
             setSelectedRow({});
           } else {
@@ -153,7 +169,7 @@ const Menus = () => {
           .then(async (res) => {
             if (res.data.success) {
               swalSuccess();
-              await getMenus();
+              await getMenu();
               setEdit(false);
               setSelectedRow({});
             } else {
@@ -169,7 +185,7 @@ const Menus = () => {
   };
 
   useEffect(() => {
-    getMenus();
+    // getMenus();
     getParentMenus();
 
     if (selectedRow && Object.keys(selectedRow).length > 0) {

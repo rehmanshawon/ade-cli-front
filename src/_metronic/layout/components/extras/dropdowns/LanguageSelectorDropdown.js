@@ -5,31 +5,54 @@ import { Dropdown, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import API from "../../../../../app/helpers/devApi";
+import { actions } from "../../../../../app/modules/Auth/redux/authRedux";
 import {
   changeMenu,
   setModules,
 } from "../../../../../app/modules/Auth/redux/authReducer";
 import { DropdownTopbarItemToggler } from "../../../../_partials/dropdowns";
+import { getMenuByModule } from "../../../../../app/modules/Auth/redux/authCrud";
 
-export function LanguageSelectorDropdown() {
+export function LanguageSelectorDropdown(props) {
   const history = useHistory();
   const dispatch = useDispatch();
-  const { menuType, modules } = useSelector((state) => state.auth);
+  const { modules } = useSelector((state) => state.auth);
 
-  const getModuleList = async () => {
-    await API.get("/sys_modules").then((res) => {
-      if (res.data.success) {
-        dispatch(setModules(res.data.data.sys_modules ?? []));
-      }
-    });
+  const menuType =
+    localStorage.getItem("menuType") &&
+    JSON.parse(localStorage.getItem("menuType"));
+
+  // const getModuleList = async () => {
+  //   await API.get("/sys_modules").then((res) => {
+  //     if (res.data.success) {
+  //       dispatch(setModules(res.data.data.sys_modules ?? []));
+  //     }
+  //   });
+  // };
+
+  // useEffect(() => {
+  //   getModuleList();
+  // }, []);
+
+  const getMenu = async (menuType) => {
+    if (menuType?.id) {
+      await getMenuByModule(menuType.id).then((res) => {
+        if (res.data.success) {
+          dispatch(actions.menu(res?.data.data?.sys_menus));
+        }
+      });
+    }
   };
 
-  useEffect(() => {
-    getModuleList();
-  }, []);
-
-  const handleModule = (type, id, slug) => {
-    dispatch(changeMenu({ type: type, id: id, slug: slug }));
+  const handleModule = async (type, id, slug) => {
+    const data = {
+      type: type,
+      id: id,
+      slug: slug,
+    };
+    localStorage.setItem("menuType", JSON.stringify(data));
+    dispatch(actions.menuType(data));
+    await getMenu(data);
     return history.push(`/dashboard/${slug}`);
   };
   return (
@@ -43,7 +66,7 @@ export function LanguageSelectorDropdown() {
           overlay={<Tooltip id="language-panel-tooltip">Select Module</Tooltip>}
         >
           <div className="btn btn-dropdown btn-lg mr-1">
-            {menuType.type ?? "Select Module"}
+            {menuType?.type ?? "Select Module"}
           </div>
         </OverlayTrigger>
       </Dropdown.Toggle>

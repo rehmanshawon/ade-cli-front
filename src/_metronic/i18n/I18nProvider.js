@@ -1,13 +1,13 @@
 import React from "react";
-import {useLang} from "./Metronici18n";
-import {IntlProvider} from "react-intl";
+import { useLang } from "./Metronici18n";
+import { IntlProvider } from "react-intl";
 import "@formatjs/intl-relativetimeformat/polyfill";
-import "@formatjs/intl-relativetimeformat/dist/locale-data/en";
-import "@formatjs/intl-relativetimeformat/dist/locale-data/de";
-import "@formatjs/intl-relativetimeformat/dist/locale-data/es";
-import "@formatjs/intl-relativetimeformat/dist/locale-data/fr";
-import "@formatjs/intl-relativetimeformat/dist/locale-data/ja";
-import "@formatjs/intl-relativetimeformat/dist/locale-data/zh";
+// import "@formatjs/intl-relativetimeformat/dist/locale-data/en";
+// import "@formatjs/intl-relativetimeformat/dist/locale-data/de";
+// import "@formatjs/intl-relativetimeformat/dist/locale-data/es";
+// import "@formatjs/intl-relativetimeformat/dist/locale-data/fr";
+// import "@formatjs/intl-relativetimeformat/dist/locale-data/ja";
+// import "@formatjs/intl-relativetimeformat/dist/locale-data/zh";
 
 import deMessages from "./messages/de";
 import enMessages from "./messages/en";
@@ -22,7 +22,7 @@ const allMessages = {
   es: esMessages,
   fr: frMessages,
   ja: jaMessages,
-  zh: zhMessages
+  zh: zhMessages,
 };
 
 export function I18nProvider({ children }) {

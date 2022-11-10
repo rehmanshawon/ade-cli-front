@@ -1,43 +1,52 @@
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useMemo } from "react";
 import SVG from "react-inlinesvg";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import { NavLink } from "react-router-dom";
 import API from "../../../../../app/helpers/devApi";
+import { getMenuByModule } from "../../../../../app/modules/Auth/redux/authCrud";
 import { setMenu } from "../../../../../app/modules/Auth/redux/authReducer";
 import { checkIsActive, toAbsoluteUrl } from "../../../../_helpers";
+import { actions } from "../../../../../app/modules/Auth/redux/authRedux";
 
 export function AsideMenuList({ layoutProps }) {
   const location = useLocation();
+  const didRequest = useRef(false);
   const getMenuItemActive = (url, hasSubmenu = false) => {
     return checkIsActive(location, url)
       ? ` ${!hasSubmenu && "menu-item-active"} menu-item-open `
       : "";
   };
-  const { menu, menuType } = useSelector((state) => state.auth);
+  const { menu } = useSelector((state) => state.auth);
+  const menuType =
+    localStorage.getItem("menuType") &&
+    JSON.parse(localStorage.getItem("menuType"));
   const dispatch = useDispatch();
   const menus = useMemo(() => menu, [menu]);
+
+  console.log({ menuType });
 
   const ordering = [...menus];
   // ordering.sort((a, b) => b.menu_order - a.menu_order);
 
   // console.log({ ordering });
 
-  const getMenu = async (menuType) => {
-    await API.get(`/sys_menus?field=module_id&search=${menuType}`).then(
-      (res) => {
-        if (res.data.success) {
-          dispatch(setMenu(res.data.data.sys_menus ?? []));
-        }
-      }
-    );
-  };
-
   useEffect(() => {
-    getMenu(menuType.id);
-  }, [menuType.id]);
+    const getMenu = async (menuType) => {
+      if (menuType?.id) {
+        await getMenuByModule(menuType.id).then((res) => {
+          if (res.data.success) {
+            dispatch(actions.menu(res?.data.data?.sys_menus));
+          }
+        });
+      }
+    };
+    if (menuType) {
+      getMenu(menuType);
+    }
+  }, []);
 
   const renderMenuItem = (item) => {
     const { menu_name, menu_url, children, menu_icon_url, id, ...rest } = item;
@@ -92,9 +101,9 @@ export function AsideMenuList({ layoutProps }) {
         <NavLink className="menu-link" to={`/${menu_url}`}>
           <span className="svg-icon menu-icon">
             {menu_icon_url ? (
-              <i className={`text-primary ${menu_icon_url}`}>
-                <span />
-              </i>
+              <span className="svg-icon menu-icon">
+                <SVG src={toAbsoluteUrl(menu_icon_url)} />
+              </span>
             ) : (
               <i className="menu-bullet menu-bullet-dot">
                 <span />
@@ -109,7 +118,7 @@ export function AsideMenuList({ layoutProps }) {
 
   return (
     <>
-      {/* begin::Menu Nav */}
+      {/* begin::Menu Nav  */}
 
       <ul className={`menu-nav ${layoutProps.ulClasses}`}>
         {ordering &&

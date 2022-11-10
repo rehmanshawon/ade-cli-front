@@ -11,11 +11,12 @@ import { DropdownTopbarItemToggler } from "../../../../_partials/dropdowns";
 import { logout } from "../../../../../app/modules/Auth/redux/authReducer";
 import SVG from "react-inlinesvg";
 export function UserProfileDropdown() {
-  const {
-    user: { data },
-  } = useSelector((state) => state.auth);
+  // const {
+  //   user: { data },
+  // } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
+  const { user } = useSelector((state) => state.auth);
   //
 
   //
@@ -47,12 +48,12 @@ export function UserProfileDropdown() {
             Hi,
           </span>{" "}
           <span className="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-3">
-            {data.name?.split(" ")[0]}
+            {user.name?.split(" ")[0]}
           </span>
-          {data.name?.split(" ")[1] && (
+          {user.name?.split(" ")[1] && (
             <span className="symbol symbol-35 symbol-light-success">
               <span className="symbol-label font-size-h5 font-weight-bold">
-                {data.name?.split(" ")[1]}
+                {user.name?.split(" ")[1]}
               </span>
             </span>
           )}
@@ -68,7 +69,7 @@ export function UserProfileDropdown() {
                   <img src={toAbsoluteUrl("/media/users/300_21.jpg")} alt="" />
                 </div>
                 <div className="text-dark m-0 flex-grow-1 mr-3 font-size-h5">
-                  {data.name}
+                  {user.name}
                 </div>
                 <button
                   className="btn btn-light-primary btn-bold"
@@ -94,7 +95,7 @@ export function UserProfileDropdown() {
                 <img src={toAbsoluteUrl("/media/users/300_21.jpg")} alt="" />
               </div>
               <div className="text-white m-0 flex-grow-1 mr-3 font-size-h5">
-                {data.name}
+                {user.name}
               </div>
 
               <button

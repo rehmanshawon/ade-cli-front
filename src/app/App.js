@@ -10,6 +10,7 @@ import { HashRouter } from "react-router-dom";
 import { Routes } from "../app/Routes";
 import { I18nProvider } from "../_metronic/i18n";
 import { LayoutSplashScreen } from "../_metronic/layout";
+import AuthInit from "./modules/Auth/redux/AuthInit";
 
 export default function App({ store, basename }) {
   return (
@@ -27,8 +28,10 @@ export default function App({ store, basename }) {
           {/* Provide `react-intl` context synchronized with Redux state.  */}
           <I18nProvider>
             {/* Render routes with provided `Layout`. */}
-            <Toaster />
-            <Routes />
+            <AuthInit>
+              <Toaster />
+              <Routes />
+            </AuthInit>
           </I18nProvider>
         </HashRouter>
       </React.Suspense>
