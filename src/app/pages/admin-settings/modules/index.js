@@ -1,21 +1,17 @@
 import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import SVG from "react-inlinesvg";
-import { useDispatch, useSelector } from "react-redux";
 import TableComponent from "../../../../_metronic/table/TableComponent";
 import { toAbsoluteUrl } from "../../../../_metronic/_helpers";
 import API from "../../../helpers/devApi";
 import { swalConfirm, swalError, swalSuccess } from "../../../helpers/swal";
-import { setModules } from "../../../modules/Auth/redux/authReducer";
 import { AddEditModulesModal } from "./AddEditModulesModal";
 
 export const Modules = () => {
-  const dispatch = useDispatch();
   const [entities, setEntities] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [edit, setEdit] = useState(false);
   const [selectedRow, setSelectedRow] = useState({});
-  const { menuType, modules } = useSelector((state) => state.auth);
 
   // get list
   const getEntityList = async () => {

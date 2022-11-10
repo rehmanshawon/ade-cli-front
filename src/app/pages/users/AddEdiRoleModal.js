@@ -73,7 +73,7 @@ export const AddEditRoleModal = ({
     } else {
       setRole(_init);
     }
-  }, [edit]);
+  }, [edit, selectedRow.role_name]);
 
   return (
     <Modal
@@ -113,6 +113,7 @@ export const AddEditRoleModal = ({
                 component={Input}
                 placeholder="Enter Role Name"
                 label="Role Name"
+                value={values.role_name ?? ""}
               />
             </Modal.Body>
 

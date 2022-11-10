@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { Button, Form, Col, Row } from "react-bootstrap";
-import API from "../../helpers/devApi";
-import { useSelector } from "react-redux";
-import { swalConfirm, swalError, swalSuccess } from "../../helpers/swal";
 import { Select } from "antd";
+import React, { useEffect, useState } from "react";
+import { Button, Col, Form, Row } from "react-bootstrap";
+import { useSelector } from "react-redux";
+import API from "../../helpers/devApi";
+import { swalError, swalSuccess } from "../../helpers/swal";
 
 const { Option } = Select;
 
@@ -78,8 +78,10 @@ export default function UserFeature() {
 
   useEffect(() => {
     fetchUserRole();
-    fetchParentModule();
-  }, []);
+    if (menuType) {
+      fetchParentModule();
+    }
+  }, [menuType]);
 
   return (
     <>

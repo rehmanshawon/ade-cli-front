@@ -17,7 +17,6 @@ export const UserRoles = () => {
   const getEntityList = async () => {
     await API.get("/sys_roles")
       .then((res) => {
-        console.log({ res });
         if (res.data.success) {
           setEntities(res.data?.data?.sys_roles);
         }

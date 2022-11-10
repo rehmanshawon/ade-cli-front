@@ -88,14 +88,6 @@ const Menus = () => {
       });
   };
 
-  const getMenus = async () => {
-    await API.get("/sys_menus").then((res) => {
-      if (res.data.success) {
-        setTreeData(res.data.data.sys_menus);
-      }
-    });
-  };
-
   // get parent menu
   const getParentMenus = async () => {
     await API.get(`/sys_menus/${menuType.id}/0`).then((res) => {

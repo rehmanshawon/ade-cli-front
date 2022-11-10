@@ -1,19 +1,15 @@
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
-import React, { useEffect, useRef } from "react";
-import { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import SVG from "react-inlinesvg";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import { NavLink } from "react-router-dom";
-import API from "../../../../../app/helpers/devApi";
 import { getMenuByModule } from "../../../../../app/modules/Auth/redux/authCrud";
-import { setMenu } from "../../../../../app/modules/Auth/redux/authReducer";
-import { checkIsActive, toAbsoluteUrl } from "../../../../_helpers";
 import { actions } from "../../../../../app/modules/Auth/redux/authRedux";
+import { checkIsActive, toAbsoluteUrl } from "../../../../_helpers";
 
 export function AsideMenuList({ layoutProps }) {
   const location = useLocation();
-  const didRequest = useRef(false);
   const getMenuItemActive = (url, hasSubmenu = false) => {
     return checkIsActive(location, url)
       ? ` ${!hasSubmenu && "menu-item-active"} menu-item-open `
@@ -26,13 +22,7 @@ export function AsideMenuList({ layoutProps }) {
   const dispatch = useDispatch();
   const menus = useMemo(() => menu, [menu]);
 
-  console.log({ menuType });
-
   const ordering = [...menus];
-  // ordering.sort((a, b) => b.menu_order - a.menu_order);
-
-  // console.log({ ordering });
-
   useEffect(() => {
     const getMenu = async (menuType) => {
       if (menuType?.id) {

@@ -36,7 +36,7 @@ export function Footer() {
         </div>
         <div className="nav nav-dark order-1 order-md-2">
           <a
-            href="#"
+            href="!#"
             target="_blank"
             rel="noopener noreferrer"
             className="nav-link pr-3 pl-0"
@@ -44,7 +44,7 @@ export function Footer() {
             About
           </a>
           <a
-            href="#"
+            href="!#"
             target="_blank"
             rel="noopener noreferrer"
             className="nav-link px-3"
@@ -52,7 +52,7 @@ export function Footer() {
             Team
           </a>
           <a
-            href="#"
+            href="!#"
             target="_blank"
             rel="noopener noreferrer"
             className="nav-link pl-3 pr-0"

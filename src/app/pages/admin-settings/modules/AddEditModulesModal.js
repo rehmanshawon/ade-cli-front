@@ -79,7 +79,12 @@ export const AddEditModulesModal = ({
     } else {
       setRole(_init);
     }
-  }, [edit]);
+  }, [
+    edit,
+    selectedRow.module_name,
+    selectedRow.module_url,
+    selectedRow.module_icon_url,
+  ]);
 
   return (
     <Modal
@@ -119,18 +124,21 @@ export const AddEditModulesModal = ({
                 component={Input}
                 placeholder="Enter Module Name"
                 label="Module Name"
+                value={values.module_name ?? ""}
               />
               <Field
                 name="module_url"
                 component={Input}
                 placeholder="Enter Module URL"
                 label="Module URL"
+                value={values.module_url ?? ""}
               />
               <Field
                 name="module_icon_url"
                 component={Input}
                 placeholder="Enter Module Icon URL"
                 label="Module Icon URL"
+                value={values.module_icon_url ?? ""}
               />
             </Modal.Body>
 

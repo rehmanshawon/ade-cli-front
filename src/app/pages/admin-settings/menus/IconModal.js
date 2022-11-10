@@ -1,7 +1,5 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
-import { icons } from "../../../../data/fontAwesome";
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../../_metronic/_helpers";
 
@@ -10,8 +8,6 @@ function importAll(r) {
 }
 
 const IconModal = ({ showDetails, setShowDetails, setSelected, selected }) => {
-  const icon = [...icons];
-
   const filenames = importAll(require.context("./all", false, /\.(svg)$/));
 
   const [searchList, setSearchList] = useState(filenames ?? []);

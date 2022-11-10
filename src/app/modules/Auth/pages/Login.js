@@ -1,12 +1,11 @@
 import { useFormik } from "formik";
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FormattedMessage, injectIntl } from "react-intl";
+import { connect, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import { login } from "../redux/authCrud";
 import * as auth from "../redux/authRedux";
-import { connect } from "react-redux";
-import { FormattedMessage, injectIntl } from "react-intl";
 
 /*
   Formik+YUP:
@@ -20,7 +19,6 @@ const initialValues = {
 
 function Login(props) {
   const { intl } = props;
-  const dispatch = useDispatch();
   const { authToken, loading, error } = useSelector((state) => state.auth);
 
   useEffect(() => {

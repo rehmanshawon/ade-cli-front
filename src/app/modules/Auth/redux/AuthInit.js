@@ -1,9 +1,9 @@
-import React, { useRef, useEffect, useState } from "react";
-import { shallowEqual, useSelector, connect, useDispatch } from "react-redux";
-import { LayoutSplashScreen } from "../../../../_metronic/layout";
-import * as auth from "./authRedux";
-import { getUserByToken, getModuleList, getMenuByModule } from "./authCrud";
 import jwtDecode from "jwt-decode";
+import React, { useEffect, useRef, useState } from "react";
+import { connect, shallowEqual, useDispatch, useSelector } from "react-redux";
+import { LayoutSplashScreen } from "../../../../_metronic/layout";
+import { getModuleList } from "./authCrud";
+import * as auth from "./authRedux";
 
 function AuthInit(props) {
   const didRequest = useRef(false);
@@ -15,15 +15,6 @@ function AuthInit(props) {
     }),
     shallowEqual
   );
-
-  const menuType =
-    localStorage.getItem("menuType") &&
-    JSON.parse(localStorage.getItem("menuType"));
-
-  // const { authToken } = useSelector((state) => state.auth, shallowEqual);
-
-  const state = useSelector((state) => state);
-  console.log({ state }, "+++++");
 
   // We should request user by authToken before rendering the application
   useEffect(() => {
