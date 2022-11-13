@@ -20,15 +20,16 @@ export function AsideMenuList({ layoutProps }) {
     localStorage.getItem("menuType") &&
     JSON.parse(localStorage.getItem("menuType"));
   const dispatch = useDispatch();
-  const menus = useMemo(() => menu, [menu]);
+  const menus = useMemo(() => menu ?? [], [menu ?? []]);
 
   const ordering = [...menus];
+
   useEffect(() => {
     const getMenu = async (menuType) => {
       if (menuType?.id) {
-        await getMenuByModule(menuType.id).then((res) => {
+        await getMenuByModule(menuType?.id).then((res) => {
           if (res.data.success) {
-            dispatch(actions.menu(res?.data.data?.sys_menus));
+            dispatch(actions.menu(res?.data?.data?.sys_menus));
           }
         });
       }
@@ -42,7 +43,7 @@ export function AsideMenuList({ layoutProps }) {
     const { menu_name, menu_url, children, menu_icon_url, id, ...rest } = item;
     const ordering = [...children];
 
-    if (item.children.length > 0) {
+    if (item?.children?.length > 0) {
       return (
         <li
           className={`menu-item menu-item-submenu ${getMenuItemActive(
@@ -73,7 +74,7 @@ export function AsideMenuList({ layoutProps }) {
               {ordering &&
                 ordering?.length > 0 &&
                 ordering
-                  ?.sort((a, b) => a.menu_order - b.menu_order)
+                  ?.sort((a, b) => a?.menu_order - b?.menu_order)
                   ?.map((submenu) => renderMenuItem(submenu))}
               {/*end::2 Level*/}
             </ul>
@@ -110,11 +111,11 @@ export function AsideMenuList({ layoutProps }) {
     <>
       {/* begin::Menu Nav  */}
 
-      <ul className={`menu-nav ${layoutProps.ulClasses}`}>
+      <ul className={`menu-nav ${layoutProps?.ulClasses}`}>
         {ordering &&
           ordering?.length > 0 &&
           ordering
-            ?.sort((a, b) => a.menu_order - b.menu_order)
+            ?.sort((a, b) => a?.menu_order - b?.menu_order)
             ?.map((menu, i) => renderMenuItem(menu))}
       </ul>
     </>

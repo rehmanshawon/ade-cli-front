@@ -16,6 +16,15 @@ import ErrorsPage from "./modules/ErrorsExamples/ErrorsPage";
 export function Routes() {
   const { authToken } = useSelector((state) => state.auth, shallowEqual);
 
+  const { isAuthorized } = useSelector(
+    ({ auth }) => ({
+      isAuthorized: auth.user != null,
+    }),
+    shallowEqual
+  );
+
+  console.log({ isAuthorized });
+
   // const { isAuthorized } = useSelector(
   //   (state) => ({
   //     isAuthorized: state.auth != null,
@@ -25,7 +34,7 @@ export function Routes() {
 
   return (
     <Switch>
-      {!authToken ? (
+      {!isAuthorized ? (
         /*Render auth page when user at `/auth` and not authorized.*/
         <Route>
           <AuthPage />
@@ -36,9 +45,8 @@ export function Routes() {
       )}
 
       <Route path="/error" component={ErrorsPage} />
-      {/* <Route path="/logout" component={Logout} /> */}
 
-      {!authToken ? (
+      {!isAuthorized ? (
         /*Redirect to `/auth` when user is not authorized*/
         <Redirect to="/auth/login" />
       ) : (
