@@ -10,6 +10,7 @@ import { toAbsoluteUrl } from "../../../../_helpers";
 import { DropdownTopbarItemToggler } from "../../../../_partials/dropdowns";
 import { logout } from "../../../../../app/modules/Auth/redux/authReducer";
 import SVG from "react-inlinesvg";
+import { actions } from "../../../../../app/modules/Auth/redux/authRedux";
 export function UserProfileDropdown() {
   // const {
   //   user: { data },
@@ -30,7 +31,8 @@ export function UserProfileDropdown() {
   }, [uiService]);
 
   const logoutClick = () => {
-    dispatch(logout({}));
+    localStorage.clear();
+    dispatch(actions.logout());
   };
 
   return (

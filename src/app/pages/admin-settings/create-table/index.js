@@ -4,40 +4,29 @@ import { useState } from "react";
 import { Input } from "../../../../_metronic/_partials/controls";
 import API from "../../../helpers/devApi";
 import { TagsInput } from "react-tag-input-component";
-import { swalConfirm, swalSuccess } from "../../../helpers/swal";
+import { swalConfirm, swalError, swalSuccess } from "../../../helpers/swal";
+import isVarName from "is-var-name";
 
 const _init = {
-  tableName: "sys_role_table",
+  tableName: "",
   createCrud: false,
   fieldList: [
     {
-      field: "name",
-      type: "string",
-      unique: true,
+      field: "",
+      type: "",
+      unique: false,
       optional: false,
       foreignKey: false,
-    },
-    {
-      field: "role_id",
-      type: "number",
-      unique: false,
-      optional: true,
-      foreignKey: true,
+      isEnum: false,
       reference: {
         relation: "1:N",
-        left_table_key: "role_id",
+        left_table_key: "",
         right_table_key: "id",
-        left_table: "sys_role_table",
-        right_table: "sys_roles",
+        left_table: "",
+        right_table: "",
       },
-    },
-    {
-      field: "access_type",
-      type: "string",
-      optional: false,
-      isEnum: true,
       enum: {
-        enumValues: ["All", "Create", "Read", "Update", "Delete", "None"],
+        enumValues: [],
         enumName: "privilege",
       },
     },
@@ -48,10 +37,10 @@ const CreateTable = () => {
   const [tableList, setTableList] = useState([]);
 
   const getTableList = async () => {
-    await API.get("/sys_tables")
+    await API.get("/masterdata")
       .then((res) => {
         if (res.data?.success) {
-          setTableList(res.data?.data?.sys_tables);
+          setTableList(res.data?.data?.tables);
         }
       })
       .catch((error) => {
@@ -75,6 +64,70 @@ const CreateTable = () => {
     });
   };
 
+  // handle submit table data
+  const handleSubmitTable = async (values, actions) => {
+    for (let i = 0; i < values.fieldList?.length; i++) {
+      if (!values?.fieldList[i]?.foreignKey) {
+        delete values?.fieldList[i]?.reference;
+      }
+      if (!values?.fieldList[i]?.isEnum) {
+        delete values?.fieldList[i]?.enum;
+      }
+    }
+
+    await API.post("/masterdata", values)
+      .then(async (res) => {
+        if (res.data?.success) {
+          await getTableList();
+          actions.resetForm();
+          swalSuccess("Created Table");
+        } else {
+          swalError("something went wrong");
+        }
+      })
+      .catch((error) => {
+        swalError("something went wrong");
+      });
+  };
+
+  // custom validation
+  const validate = (values) => {
+    let errors = {};
+
+    if (!values.tableName) {
+      errors.tableName = "table name Cannot be blank";
+    } else if (!isVarName(values.tableName)) {
+      errors.tableName = "table name must be match with variable";
+    }
+
+    if (values.fieldList?.length == 0) {
+      errors.fieldList = "minimum 1 field required";
+    }
+
+    for (let i = 0; i < values?.fieldList?.length; i++) {
+      if (!values?.fieldList[i]?.field) {
+        errors[`fieldList.${i}.field`] = "field name required";
+      }
+      if (!values?.fieldList[i]?.type) {
+        errors[`fieldList.${i}.type`] = "field type required";
+      }
+
+      if (values?.fieldList[i]?.foreignKey) {
+        if (!values?.fieldList[i]?.reference?.right_table) {
+          errors[`fieldList.${i}.reference.right_table`] =
+            "right table required";
+        }
+      }
+      if (values?.fieldList[i]?.isEnum) {
+        if (values?.fieldList[i]?.enum?.enumValues?.length == 0) {
+          errors[`fieldList.${i}.enum.enumValues`] = "field required";
+        }
+      }
+    }
+
+    return errors;
+  };
+
   useEffect(() => {
     getTableList();
   }, []);
@@ -88,12 +141,12 @@ const CreateTable = () => {
         <Formik
           enableReinitialize={true}
           initialValues={_init}
-          // validationSchema={}
+          validate={validate}
           onSubmit={(values, action) => {
-            console.log({ values });
+            handleSubmitTable(values, action);
           }}
         >
-          {({ handleSubmit, errors, values, setFieldValue }) => (
+          {({ handleSubmit, errors, values, setFieldValue, touched }) => (
             <Form>
               <Field
                 name="tableName"
@@ -109,34 +162,51 @@ const CreateTable = () => {
                     <div className="row p-5 border mb-3">
                       <div className="col-md-6">
                         {field.foreignKey ? (
-                          <Field
-                            name={`field`}
-                            component={Input}
-                            disabled
-                            onChange={(e) => {
-                              setFieldValue(
-                                `fieldList.${i}.reference.left_table_key`,
-                                e.target.value
-                              );
-                            }}
-                            placeholder="Enter Field Name"
-                            label="Field Name"
-                            value={field.reference?.left_table_key ?? ""}
-                          />
+                          <div>
+                            <Field
+                              name={`field`}
+                              component={Input}
+                              disabled
+                              onChange={(e) => {
+                                setFieldValue(
+                                  `fieldList.${i}.reference.left_table_key`,
+                                  e.target.value
+                                );
+                              }}
+                              placeholder="Enter Field Name"
+                              label="Field Name"
+                              value={field.reference?.left_table_key ?? ""}
+                            />
+                            {errors.field && (
+                              <div className="text-danger">{errors.field}</div>
+                            )}
+                          </div>
                         ) : (
-                          <Field
-                            name={`field`}
-                            component={Input}
-                            onChange={(e) => {
-                              setFieldValue(
-                                `fieldList.${i}.field`,
-                                e.target.value
-                              );
-                            }}
-                            placeholder="Enter Field Name"
-                            label="Field Name"
-                            value={field.field ?? ""}
-                          />
+                          <div>
+                            <Field
+                              name={`field`}
+                              component={Input}
+                              onChange={(e) => {
+                                setFieldValue(
+                                  `fieldList.${i}.field`,
+                                  e.target.value
+                                );
+
+                                setFieldValue(
+                                  `fieldList.${i}.reference.left_table`,
+                                  e.target.value
+                                );
+                              }}
+                              placeholder="Enter Field Name"
+                              label="Field Name"
+                              value={field.field ?? ""}
+                            />
+                            {errors[`fieldList.${i}.field`] && (
+                              <div className="text-danger">
+                                {errors[`fieldList.${i}.field`]}
+                              </div>
+                            )}
+                          </div>
                         )}
                       </div>
                       <div className="col-md-6 form-group">
@@ -155,6 +225,11 @@ const CreateTable = () => {
                             </option>
                           ))}
                         </select>
+                        {errors[`fieldList.${i}.type`] && (
+                          <div className="text-danger">
+                            {errors[`fieldList.${i}.type`]}
+                          </div>
+                        )}
                       </div>
 
                       <div className="col-md-12">
@@ -163,7 +238,7 @@ const CreateTable = () => {
                             <label className="checkbox checkbox-rounded">
                               <input
                                 type="checkbox"
-                                checked={field.unique}
+                                checked={field.unique ?? false}
                                 name="unique"
                                 onChange={(e) => {
                                   setFieldValue(
@@ -178,7 +253,7 @@ const CreateTable = () => {
                             <label className="checkbox checkbox-rounded">
                               <input
                                 type="checkbox"
-                                checked={field.optional}
+                                checked={field.optional ?? false}
                                 name="optional"
                                 onChange={(e) => {
                                   setFieldValue(
@@ -193,12 +268,19 @@ const CreateTable = () => {
                             <label className="checkbox checkbox-rounded">
                               <input
                                 type="checkbox"
-                                checked={field.foreignKey}
+                                checked={field.foreignKey ?? false}
                                 name="foreignKey"
                                 onChange={(e) => {
                                   setFieldValue(
                                     `fieldList.${i}.foreignKey`,
                                     e.target.checked
+                                  );
+
+                                  setFieldValue(`fieldList.${i}.isEnum`, false);
+
+                                  setFieldValue(
+                                    `fieldList.${i}.enum.enumValues`,
+                                    []
                                   );
                                 }}
                               />
@@ -208,12 +290,17 @@ const CreateTable = () => {
                             <label className="checkbox checkbox-rounded">
                               <input
                                 type="checkbox"
-                                checked={field.isEnum}
+                                checked={field.isEnum ?? false}
                                 name="isEnum"
                                 onChange={(e) => {
                                   setFieldValue(
                                     `fieldList.${i}.isEnum`,
                                     e.target.checked
+                                  );
+
+                                  setFieldValue(
+                                    `fieldList.${i}.foreignKey`,
+                                    false
                                   );
                                 }}
                               />
@@ -231,6 +318,11 @@ const CreateTable = () => {
                             className="form-control form-control-solid"
                             value={field.reference?.right_table ?? ""}
                             onChange={(e) => {
+                              setFieldValue(
+                                `fieldList.${i}.reference.left_table`,
+                                values.tableName
+                              );
+
                               setFieldValue(
                                 `fieldList.${i}.reference.left_table_key`,
                                 `${e.target.value}_id`
@@ -250,11 +342,16 @@ const CreateTable = () => {
                             {tableList &&
                               tableList.length > 0 &&
                               tableList.map((item, i) => (
-                                <option key={i} value={item.table_name}>
-                                  {item.table_name}
+                                <option key={i} value={item}>
+                                  {item}
                                 </option>
                               ))}
                           </select>
+                          {errors[`fieldList.${i}.reference.right_table`] && (
+                            <div className="text-danger">
+                              {errors[`fieldList.${i}.reference.right_table`]}
+                            </div>
+                          )}
                         </div>
                       )}
 
@@ -272,6 +369,11 @@ const CreateTable = () => {
                             placeHolder="enter enum values"
                           />
                           <em>press enter to add new enum</em>
+                          {errors[`fieldList.${i}.enum.enumValues`] && (
+                            <div className="text-danger">
+                              {errors[`fieldList.${i}.enum.enumValues`]}
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
@@ -298,6 +400,18 @@ const CreateTable = () => {
                                 unique: false,
                                 optional: false,
                                 foreignKey: false,
+                                isEnum: false,
+                                reference: {
+                                  relation: "1:N",
+                                  left_table_key: "",
+                                  right_table_key: "id",
+                                  left_table: "",
+                                  right_table: "",
+                                },
+                                enum: {
+                                  enumValues: [],
+                                  enumName: "privilege",
+                                },
                               }
                             );
                           }}

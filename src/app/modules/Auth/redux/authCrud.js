@@ -2,7 +2,7 @@ import API from "../../../helpers/devApi";
 export const LOGIN_URL = `/auth/login`;
 export const REGISTER_URL = `/auth/register`;
 export const REQUEST_PASSWORD_URL = `/auth/forgot-password`;
-export const ME_URL = `/auth/profile`;
+export const ME_URL = `/sys_users`;
 export const MODULE_URL = `/sys_modules`;
 export const MENU_URL = `/sys_menus`;
 

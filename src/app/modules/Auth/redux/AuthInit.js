@@ -43,10 +43,10 @@ function AuthInit(props) {
     if (authToken) {
       requestUser(authToken);
       const userData = jwtDecode(authToken);
+      localStorage.setItem("user", JSON.stringify(userData));
+      dispatch(props.fulfillUser(userData));
       if (Object.keys(userData).length > 0) {
-        localStorage.setItem("user", JSON.stringify(userData));
         localStorage.setItem("AUTH", authToken);
-        dispatch(props.fulfillUser(userData));
 
         setShowSplashScreen(false);
       } else {

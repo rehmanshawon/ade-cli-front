@@ -112,9 +112,9 @@ export function* saga() {
   //   });
 
   yield takeLatest(actionTypes.UserRequested, function* userRequested() {
-    const { data: user } = yield getUserByToken();
+    const { data: data } = yield getUserByToken();
 
-    yield put(actions.fulfillUser(user));
+    yield put(actions.fulfillUser(data?.sys_users[0]));
   });
 
   // yield takeLatest(actionTypes.SetMenuType, function* setMenuType() {
