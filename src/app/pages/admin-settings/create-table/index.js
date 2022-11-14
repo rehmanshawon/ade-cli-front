@@ -379,6 +379,7 @@ const CreateTable = () => {
                     </div>
                     <div className="d-flex g-3">
                       <button
+                        type="button"
                         disabled={row.length == 1 ? true : false}
                         className="btn btn-danger mr-2"
                         onClick={() => {

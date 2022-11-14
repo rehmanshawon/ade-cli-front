@@ -19,7 +19,7 @@ export default function BasePage() {
 
         <Route exact path="/dashboard" component={AllDashboardPages} />
         <Route path="/user-setting" component={UserSettingsPage} />
-        <Route path="/users" component={UserRolePage} />
+        <Route path="/user-setting/roles" component={UserRolePage} />
         <Route path="/admin-settings" component={AdminSettingsPage} />
 
         {/* <Redirect to="error/error-v1" /> */}

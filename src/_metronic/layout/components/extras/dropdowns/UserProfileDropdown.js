@@ -1,16 +1,15 @@
 /* eslint-disable no-restricted-imports */
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
-import React, { useMemo } from "react";
-import { Link } from "react-router-dom";
-import Dropdown from "react-bootstrap/Dropdown";
-import { useDispatch, useSelector } from "react-redux";
 import objectPath from "object-path";
-import { useHtmlClassService } from "../../../_core/MetronicLayout";
+import React, { useMemo } from "react";
+import Dropdown from "react-bootstrap/Dropdown";
+import SVG from "react-inlinesvg";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { actions } from "../../../../../app/modules/Auth/redux/authRedux";
 import { toAbsoluteUrl } from "../../../../_helpers";
 import { DropdownTopbarItemToggler } from "../../../../_partials/dropdowns";
-import { logout } from "../../../../../app/modules/Auth/redux/authReducer";
-import SVG from "react-inlinesvg";
-import { actions } from "../../../../../app/modules/Auth/redux/authRedux";
+import { useHtmlClassService } from "../../../_core/MetronicLayout";
 export function UserProfileDropdown() {
   // const {
   //   user: { data },
@@ -18,9 +17,7 @@ export function UserProfileDropdown() {
   const dispatch = useDispatch();
 
   const { user } = useSelector((state) => state.auth);
-  //
 
-  //
   const uiService = useHtmlClassService();
   const layoutProps = useMemo(() => {
     return {
@@ -50,12 +47,12 @@ export function UserProfileDropdown() {
             Hi,
           </span>{" "}
           <span className="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-3">
-            {user?.name?.split(" ")[0]}
+            {user?.user_name?.split(" ")[0]}
           </span>
           {user?.name?.split(" ")[1] && (
             <span className="symbol symbol-35 symbol-light-success">
               <span className="symbol-label font-size-h5 font-weight-bold">
-                {user?.name?.split(" ")[1]}
+                {user?.user_name?.split(" ")[1]}
               </span>
             </span>
           )}
@@ -71,7 +68,7 @@ export function UserProfileDropdown() {
                   <img src={toAbsoluteUrl("/media/users/300_21.jpg")} alt="" />
                 </div>
                 <div className="text-dark m-0 flex-grow-1 mr-3 font-size-h5">
-                  {user?.name}
+                  {user?.user_name}
                 </div>
                 <button
                   className="btn btn-light-primary btn-bold"
@@ -97,7 +94,7 @@ export function UserProfileDropdown() {
                 <img src={toAbsoluteUrl("/media/users/300_21.jpg")} alt="" />
               </div>
               <div className="text-white m-0 flex-grow-1 mr-3 font-size-h5">
-                {user?.name}
+                {user?.user_name}
               </div>
 
               <button

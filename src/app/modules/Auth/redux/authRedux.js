@@ -106,22 +106,4 @@ export function* saga() {
   yield takeLatest(actionTypes.Login, function* loginSaga() {
     yield put(actions.requestUser());
   });
-
-  //   yield takeLatest(actionTypes.Register, function* registerSaga() {
-  //     yield put(actions.requestUser());
-  //   });
-
-  yield takeLatest(actionTypes.UserRequested, function* userRequested() {
-    const { data: data } = yield getUserByToken();
-
-    yield put(actions.fulfillUser(data?.sys_users[0]));
-  });
-
-  // yield takeLatest(actionTypes.SetMenuType, function* setMenuType() {
-  //   const menuType =
-  //     localStorage.getItem("menuType") &&
-  //     JSON.parse(localStorage.getItem("menuType"));
-
-  //   yield put(actions.setMenuType(menuType));
-  // });
 }

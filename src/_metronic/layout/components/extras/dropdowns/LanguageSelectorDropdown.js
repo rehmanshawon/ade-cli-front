@@ -1,17 +1,15 @@
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
 import clsx from "clsx";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Dropdown, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import API from "../../../../../app/helpers/devApi";
-import { actions } from "../../../../../app/modules/Auth/redux/authRedux";
 import {
-  changeMenu,
-  setModules,
-} from "../../../../../app/modules/Auth/redux/authReducer";
+  getMenuByModule,
+  getModuleList,
+} from "../../../../../app/modules/Auth/redux/authCrud";
+import { actions } from "../../../../../app/modules/Auth/redux/authRedux";
 import { DropdownTopbarItemToggler } from "../../../../_partials/dropdowns";
-import { getMenuByModule } from "../../../../../app/modules/Auth/redux/authCrud";
 
 export function LanguageSelectorDropdown(props) {
   const history = useHistory();
@@ -22,17 +20,17 @@ export function LanguageSelectorDropdown(props) {
     localStorage.getItem("menuType") &&
     JSON.parse(localStorage.getItem("menuType"));
 
-  // const getModuleList = async () => {
-  //   await API.get("/sys_modules").then((res) => {
-  //     if (res.data.success) {
-  //       dispatch(setModules(res.data.data.sys_modules ?? []));
-  //     }
-  //   });
-  // };
+  const getModuleLists = async () => {
+    await getModuleList().then((res) => {
+      if (res.data.success) {
+        dispatch(actions.modules(res?.data.data?.sys_modules));
+      }
+    });
+  };
 
-  // useEffect(() => {
-  //   getModuleList();
-  // }, []);
+  useEffect(() => {
+    getModuleLists();
+  }, []);
 
   const getMenu = async (menuType) => {
     if (menuType?.id) {
