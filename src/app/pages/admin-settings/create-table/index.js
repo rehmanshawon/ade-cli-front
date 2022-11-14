@@ -148,6 +148,7 @@ const CreateTable = () => {
         >
           {({ handleSubmit, errors, values, setFieldValue, touched }) => (
             <Form>
+              {JSON.stringify(touched)}
               <Field
                 name="tableName"
                 component={Input}

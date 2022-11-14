@@ -110,7 +110,7 @@ const Menus = () => {
     const payload = {
       menu_name: values.menu_name,
       menu_url: values.menu_url,
-      menu_icon_url: selected ?? values.menu_icon_url,
+      menu_icon_url: selected == "" ? values.menu_icon_url : selected,
       menu_order: 0,
       parent_menu: values.parent_menu,
       module_id: values.module_id,
