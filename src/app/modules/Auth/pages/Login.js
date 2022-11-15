@@ -78,7 +78,12 @@ function Login(props) {
     <div className="login-form login-signin" id="kt_login_signin_form">
       {/* begin::Head */}
       <div className="text-center mb-10 mb-lg-20">
-        <h3 className="font-size-h1">Sign In</h3>
+        <h3 className="font-size-h1">
+          <FormattedMessage id="AUTH.LOGIN.TITLE" />
+        </h3>
+        <p className="text-muted font-weight-bold">
+          Enter your username and password
+        </p>
       </div>
       {/* end::Head */}
 
@@ -146,8 +151,12 @@ function Login(props) {
       </form>
       {/*end::Form*/}
       <div className="text-center mb-5">
-        {/* <h4 className="text-muted font-weight-bold">or</h4> */}
+        <h4 className="text-muted font-weight-bold">New User?</h4>{" "}
+        <Link className="font-weight-bold" to="/auth/signup">
+          Registration Now..
+        </Link>
       </div>
+
       {/* <GoogleLogin
         clientId="29603225172-pfhm883kfm8crm526lgpbpa0e92ljnul.apps.googleusercontent.com"
         buttonText="Sign In with Google"

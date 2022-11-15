@@ -148,7 +148,6 @@ const CreateTable = () => {
         >
           {({ handleSubmit, errors, values, setFieldValue, touched }) => (
             <Form>
-              {JSON.stringify(touched)}
               <Field
                 name="tableName"
                 component={Input}
@@ -332,6 +331,8 @@ const CreateTable = () => {
                                 `fieldList.${i}.field`,
                                 `${e.target.value}_id`
                               );
+
+                              setFieldValue(`fieldList.${i}.type`, `number`);
 
                               setFieldValue(
                                 `fieldList.${i}.reference.right_table`,

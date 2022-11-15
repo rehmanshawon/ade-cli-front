@@ -33,11 +33,11 @@ export const reducer = persistReducer(
         return { authToken, user: undefined };
       }
 
-      //   case actionTypes.Register: {
-      //     const { authToken } = action.payload;
+      case actionTypes.Register: {
+        const { authToken } = action.payload;
 
-      //     return { authToken, user: undefined };
-      //   }
+        return { authToken, user: undefined };
+      }
 
       case actionTypes.Logout: {
         // TODO: Change this code. Actions in reducer aren't allowed.
@@ -77,10 +77,10 @@ export const reducer = persistReducer(
 
 export const actions = {
   login: (authToken) => ({ type: actionTypes.Login, payload: { authToken } }),
-  //   register: (authToken) => ({
-  //     type: actionTypes.Register,
-  //     payload: { authToken },
-  //   }),
+  register: (authToken) => ({
+    type: actionTypes.Register,
+    payload: { authToken },
+  }),
   logout: () => ({ type: actionTypes.Logout }),
   requestUser: (user) => ({
     type: actionTypes.UserRequested,
@@ -104,6 +104,10 @@ export const actions = {
 
 export function* saga() {
   yield takeLatest(actionTypes.Login, function* loginSaga() {
+    yield put(actions.requestUser());
+  });
+
+  yield takeLatest(actionTypes.Register, function* loginSaga() {
     yield put(actions.requestUser());
   });
 }
