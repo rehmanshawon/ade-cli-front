@@ -112,11 +112,13 @@ export const GridColumn = () => {
       module_id: menuType?.id,
     };
 
+    // add sys menus
     await API.post("/sys_menus", menu).then(async (res) => {
       if (res.data?.success) {
         delete values.menu_name;
         delete values.menu_url;
         console.log("Menu Added");
+        // callback menus
         await getMenuByModule(menuType?.id).then((res) => {
           if (res.data.success) {
             dispatch(actions.menu(res?.data?.data?.sys_menus));
@@ -125,6 +127,7 @@ export const GridColumn = () => {
       }
     });
 
+    // add masters data
     await API.post("/sys_masters", values).then((res) => {
       if (res.data?.success) {
         swalSuccess();
@@ -133,6 +136,7 @@ export const GridColumn = () => {
     });
   };
 
+  // initial action
   useEffect(() => {
     getTableList();
   }, []);
