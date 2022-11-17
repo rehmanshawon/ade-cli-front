@@ -2,16 +2,28 @@ import { Field, Form, Formik } from "formik";
 import React, { Fragment, useEffect, useState } from "react";
 import { Input } from "../../../../_metronic/_partials/controls";
 import API from "../../../helpers/devApi";
+import slugify from "slugify";
+import { useDispatch, useSelector } from "react-redux";
+import { swalSuccess } from "../../../helpers/swal";
+import { getMenuByModule } from "../../../modules/Auth/redux/authCrud";
+import { actions } from "../../../modules/Auth/redux/authRedux";
 
 const _init = {
-  queryTables: [],
+  menu_name: "",
+  menu_url: "",
+  slug_name: "",
+  slug_type: "grid",
+  query_tables: [],
 };
 
 export const GridColumn = () => {
+  const dispatch = useDispatch();
   const [tableList, setTableList] = useState([]);
   const [selectedTable, setSelectedTable] = useState("");
   const [tableName, setTableName] = useState("");
+  const { menuType } = useSelector((state) => state.auth);
 
+  // get table lists
   const getTableList = async () => {
     await API.get("/sys_tables").then((res) => {
       if (res.data?.success) {
@@ -20,6 +32,7 @@ export const GridColumn = () => {
     });
   };
 
+  // get grid data and prepared data
   const getMasterGridData = async (id, setFieldValue) => {
     await API.get(`/sys_attributes/${id}`).then((res) => {
       if (res.data.success) {
@@ -32,7 +45,7 @@ export const GridColumn = () => {
             return {
               fieldName: item?.attribute_name,
               columnName: item?.attribute_name,
-              check: false,
+              include: false,
             };
           }),
         };
@@ -44,7 +57,7 @@ export const GridColumn = () => {
               return {
                 fieldName: attribute?.attribute_name,
                 columnName: attribute?.attribute_name,
-                check: false,
+                include: false,
               };
             }),
           };
@@ -53,7 +66,7 @@ export const GridColumn = () => {
           data.push(element);
         });
 
-        setFieldValue("queryTables", data);
+        setFieldValue("query_tables", data);
       }
     });
   };
@@ -62,19 +75,62 @@ export const GridColumn = () => {
   const validate = (values) => {
     let errors = {};
 
-    for (let i = 0; i < values?.queryTables?.length; i++) {
-      for (let j = 0; j < values?.queryTables[i]?.fieldList?.length; j++) {
+    if (!selectedTable) {
+      errors.table_name = "select a table";
+    }
+
+    if (!values.menu_name || values.menu_name == "") {
+      errors.menu_name = "required menu name";
+    }
+
+    if (!values.menu_url || values.menu_url == "") {
+      errors.menu_url = "required menu url";
+    }
+
+    for (let i = 0; i < values?.query_tables?.length; i++) {
+      for (let j = 0; j < values?.query_tables[i]?.fieldList?.length; j++) {
         if (
-          !values?.queryTables[i]?.fieldList[j]?.columnName ||
-          values?.queryTables[i]?.fieldList[j]?.columnName == ""
+          !values?.query_tables[i]?.fieldList[j]?.columnName ||
+          values?.query_tables[i]?.fieldList[j]?.columnName == ""
         ) {
-          errors[`queryTables.${i}.fieldList.${j}.columnName`] =
+          errors[`query_tables.${i}.fieldList.${j}.columnName`] =
             "column name required";
         }
       }
     }
 
     return errors;
+  };
+
+  // handle submit grid data
+  const handleSubmitData = async (values, action) => {
+    const menu = {
+      menu_name: values.menu_name,
+      menu_url: values.menu_url,
+      menu_icon_url: "",
+      parent_menu: 0,
+      module_id: menuType?.id,
+    };
+
+    await API.post("/sys_menus", menu).then(async (res) => {
+      if (res.data?.success) {
+        delete values.menu_name;
+        delete values.menu_url;
+        console.log("Menu Added");
+        await getMenuByModule(menuType?.id).then((res) => {
+          if (res.data.success) {
+            dispatch(actions.menu(res?.data?.data?.sys_menus));
+          }
+        });
+      }
+    });
+
+    await API.post("/sys_masters", values).then((res) => {
+      if (res.data?.success) {
+        swalSuccess();
+        action.resetForm();
+      }
+    });
   };
 
   useEffect(() => {
@@ -92,13 +148,13 @@ export const GridColumn = () => {
           initialValues={_init}
           validate={validate}
           onSubmit={(values, action) => {
-            // handleSubmitTable(values, action);
+            handleSubmitData(values, action);
           }}
         >
           {({ handleSubmit, errors, values, setFieldValue, touched }) => (
             <Form>
               <div className="row">
-                <div className="col-md-6 form-group">
+                <div className="col-md-4 mb-3">
                   <label>Select Table</label>
                   <select
                     className="form-control form-control-solid"
@@ -117,12 +173,37 @@ export const GridColumn = () => {
                         </option>
                       ))}
                   </select>
+                  {errors.table_name && (
+                    <div className="text-danger">{errors.table_name}</div>
+                  )}
+                </div>
+                <div className="col-md-4 mb-3">
+                  <Field
+                    name="menu_name"
+                    component={Input}
+                    placeholder="Enter Menu Name"
+                    label="Menu Name"
+                    value={values.menu_name ?? ""}
+                  />
+                </div>
+                <div className="col-md-4 mb-3">
+                  <Field
+                    name="menu_url"
+                    component={Input}
+                    placeholder="Enter Menu URL"
+                    label="Menu URL"
+                    onChange={(e) => {
+                      setFieldValue("menu_url", slugify(e.target.value));
+                      setFieldValue("slug_name", slugify(e.target.value));
+                    }}
+                    value={values.menu_url ?? ""}
+                  />
                 </div>
               </div>
 
-              {values.queryTables && values.queryTables.length > 0 && (
+              {values.query_tables && values.query_tables.length > 0 && (
                 <Fragment>
-                  {values.queryTables?.map((table, tabIndex) => (
+                  {values.query_tables?.map((table, tabIndex) => (
                     <Fragment key={tabIndex}>
                       <h4>
                         {table?.tableName == tableName
@@ -146,25 +227,25 @@ export const GridColumn = () => {
                                   <th scope="row">
                                     <Field
                                       type="checkbox"
-                                      name={`queryTables.${tabIndex}.fieldList.${i}.check`}
+                                      name={`query_tables.${tabIndex}.fieldList.${i}.include`}
                                     />
                                   </th>
                                   <td>{item.fieldName}</td>
                                   <td>
                                     <Field
-                                      name={`queryTables.${tabIndex}.fieldList.${i}.columnName`}
+                                      name={`query_tables.${tabIndex}.fieldList.${i}.columnName`}
                                       component={Input}
                                       placeholder="Enter Column Name"
                                       label=""
                                       value={item.columnName ?? ""}
                                     />
                                     {errors[
-                                      `queryTables.${tabIndex}.fieldList.${i}.columnName`
+                                      `query_tables.${tabIndex}.fieldList.${i}.columnName`
                                     ] && (
                                       <div className="text-danger">
                                         {
                                           errors[
-                                            `queryTables.${tabIndex}.fieldList.${i}.columnName`
+                                            `query_tables.${tabIndex}.fieldList.${i}.columnName`
                                           ]
                                         }
                                       </div>
@@ -179,6 +260,16 @@ export const GridColumn = () => {
                   ))}
                 </Fragment>
               )}
+
+              <div className="mt-5">
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  className="btn btn-primary btn-elevate"
+                >
+                  Save
+                </button>
+              </div>
             </Form>
           )}
         </Formik>

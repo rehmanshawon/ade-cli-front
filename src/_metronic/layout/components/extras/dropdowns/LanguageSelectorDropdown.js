@@ -30,6 +30,12 @@ export function LanguageSelectorDropdown(props) {
 
   useEffect(() => {
     getModuleLists();
+    let menuType =
+      localStorage.getItem("menuType") &&
+      JSON.parse(localStorage.getItem("menuType"));
+    if (menuType) {
+      dispatch(actions.menuType(menuType));
+    }
   }, []);
 
   const getMenu = async (menuType) => {
