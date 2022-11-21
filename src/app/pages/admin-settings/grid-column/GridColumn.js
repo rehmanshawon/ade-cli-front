@@ -108,7 +108,7 @@ export const GridColumn = () => {
       menu_name: values.menu_name,
       menu_url: values.menu_url,
       menu_icon_url: "",
-      parent_menu: 0,
+      createMaster: true,
       module_id: menuType?.id,
     };
 
