@@ -12,15 +12,6 @@ export default function BasePage() {
   const AdminSettingsPage = lazy(() => import("./pages/admin-settings"));
   const MasterGridPage = lazy(() => import("./pages/master-grid"));
 
-  const data = [
-    {
-      link: "/Employe/masterdata",
-    },
-    {
-      link: "/user/masterdata",
-    },
-  ];
-
   return (
     <Suspense fallback={<LayoutSplashScreen />}>
       <Switch>
@@ -30,14 +21,7 @@ export default function BasePage() {
         <Route path="/user-setting/roles" component={UserRolePage} />
         <Route path="/admin-settings" component={AdminSettingsPage} />
 
-        <Route path="/Employe/masterdata" component={MasterGridPage} />
-
-        {data &&
-          data.map((item, i) => (
-            <Fragment key={i}>
-              <Route path={item.link} component={MasterGridPage} />
-            </Fragment>
-          ))}
+        <Route path="*/masterdata" component={MasterGridPage} />
 
         {/* <Redirect to="error/error-v1" /> */}
       </Switch>

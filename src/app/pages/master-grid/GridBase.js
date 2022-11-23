@@ -10,13 +10,13 @@ const GridBase = () => {
 
   switch (slug_type) {
     case "grid":
-      return <View slug_name={slug_name} />;
+      return <View slug_name={slug_name} slug_type={slug_type} />;
 
     case "form":
-      return <Create slug_name={slug_name} />;
+      return <Create slug_name={slug_name} slug_type={slug_type} />;
 
     default:
-      return <View slug_name={slug_name} />;
+      return <View slug_name={slug_name} slug_type={slug_type} />;
   }
 };
 
