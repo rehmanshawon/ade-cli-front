@@ -11,7 +11,7 @@ const View = ({ slug_name, slug_type }) => {
   const [totalPage, setTotalPage] = useState();
   const [paginate, setPaginate] = useState({
     defaultPageSize: 10,
-    current: 0,
+    current: 1,
   });
   const [selectedPropKeys, setSelectedPropsKeys] = useState();
   const [selectedPropValue, setSelectedPropsValue] = useState();
@@ -31,7 +31,8 @@ const View = ({ slug_name, slug_type }) => {
       )
         .then(async (res) => {
           if (res.data?.success) {
-            const values = res.data?.data?.sys_masters[2];
+            const values = res.data?.data;
+            console.log({ values });
             const grid_params = values?.grid_params;
             const grid_arr = JSON.parse(grid_params);
             let arr = [];

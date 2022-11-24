@@ -130,11 +130,11 @@ const UniTable = ({
       ),
   });
 
-  const columns = column.map((item) => {
+  const columns = column.map((item, i) => {
     return {
       title: item?.columnName,
       dataIndex: item?.fieldName,
-      key: item?.fieldName,
+      key: `${item?.fieldName}_${i}`,
       ...getColumnSearchProps(`${item?.fieldName}`),
     };
   });
@@ -185,6 +185,8 @@ const UniTable = ({
         dataSource={data}
         onChange={onChange}
         pagination={false}
+        rowKey={uuidv4()}
+        key={uuidv4()}
       />
 
       <div className="mt-5" style={{ float: "right" }}>
@@ -192,6 +194,7 @@ const UniTable = ({
           showSizeChanger
           pageSizeOptions={["10", "20", "30", "50", "100"]}
           onShowSizeChange={onPageChange}
+          onChange={onPageChange}
           defaultPageSize={paginate.defaultPageSize}
           defaultCurrent={paginate.current}
           total={totalPage ?? 0}
