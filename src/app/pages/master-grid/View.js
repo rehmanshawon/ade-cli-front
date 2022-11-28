@@ -22,6 +22,9 @@ const View = ({ slug_name, slug_type }) => {
     console.log("params", pagination, filters, sorter, extra);
   };
 
+  console.log({ gridColumns });
+  console.log({ entities });
+
   // get grid data
   const getGridData = async (slug_name, slug_type) => {
     setLoading(true);

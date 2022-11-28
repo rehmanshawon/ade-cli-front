@@ -60,6 +60,7 @@
     "multiselect-react-dropdown": "^2.0.7",
     "object-path": "0.11.4",
     "perfect-scrollbar": "1.5.0",
+    "pluralize": "^8.0.0",
     "pm2": "^5.2.0",
     "prop-types": "15.7.2",
     "rc-rate": "^2.9.1",

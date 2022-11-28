@@ -45,6 +45,8 @@ export const GridColumn = () => {
             return {
               fieldName: item?.attribute_name,
               columnName: item?.attribute_name,
+              fieldType: item?.attribute_type,
+              foreignKey: item?.foreignKey == null ? false : item?.foreignKey,
               include: false,
             };
           }),
@@ -57,6 +59,8 @@ export const GridColumn = () => {
               return {
                 fieldName: attribute?.attribute_name,
                 columnName: attribute?.attribute_name,
+                fieldType: item?.attribute_type,
+                foreignKey: item?.foreignKey == null ? false : item?.foreignKey,
                 include: false,
               };
             }),
@@ -157,6 +161,7 @@ export const GridColumn = () => {
         >
           {({ handleSubmit, errors, values, setFieldValue, touched }) => (
             <Form>
+              {JSON.stringify(values)}
               <div className="row">
                 <div className="col-md-4 mb-3">
                   <label>Select Table</label>

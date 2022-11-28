@@ -56,7 +56,13 @@ export function AsideMenuList({ layoutProps }) {
         >
           <NavLink className="menu-link menu-toggle" to={`/${menu_url}` ?? "#"}>
             <span className="svg-icon menu-icon">
-              <SVG src={toAbsoluteUrl(menu_icon_url)} />
+              {menu_icon_url ? (
+                <SVG src={toAbsoluteUrl(menu_icon_url)} />
+              ) : (
+                <i className="menu-bullet menu-bullet-dot">
+                  <span />
+                </i>
+              )}
             </span>
             <span className="menu-text">{menu_name}</span>
             <i className="menu-arrow" />

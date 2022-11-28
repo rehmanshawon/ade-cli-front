@@ -6,6 +6,7 @@ import API from "../../../helpers/devApi";
 import { TagsInput } from "react-tag-input-component";
 import { swalConfirm, swalError, swalSuccess } from "../../../helpers/swal";
 import isVarName from "is-var-name";
+import pluralize from "pluralize";
 
 const _init = {
   tableName: "",
@@ -75,7 +76,13 @@ const CreateTable = () => {
       }
     }
 
-    await API.post("/masterdata", values)
+    const payload = {
+      tableName: pluralize(values.tableName),
+      createCrud: values.createCrud,
+      fieldList: values.fieldList,
+    };
+
+    await API.post("/masterdata", payload)
       .then(async (res) => {
         if (res.data?.success) {
           await getTableList();
