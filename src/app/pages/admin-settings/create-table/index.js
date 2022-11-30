@@ -10,7 +10,7 @@ import pluralize from "pluralize";
 
 const _init = {
   tableName: "",
-  createCrud: false,
+  createCrud: true,
   fieldList: [
     {
       field: "",
@@ -77,7 +77,7 @@ const CreateTable = () => {
     }
 
     const payload = {
-      tableName: pluralize(values.tableName),
+      tableName: values.tableName,
       createCrud: values.createCrud,
       fieldList: values.fieldList,
     };

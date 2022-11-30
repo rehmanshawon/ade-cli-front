@@ -12,7 +12,7 @@ const GridBase = () => {
     case "grid":
       return <View slug_name={slug_name} slug_type={slug_type} />;
 
-    case "form":
+    case "create":
       return <Create slug_name={slug_name} slug_type={slug_type} />;
 
     default:

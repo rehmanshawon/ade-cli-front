@@ -22,6 +22,7 @@ export const GridColumn = () => {
   const [selectedTable, setSelectedTable] = useState("");
   const [tableName, setTableName] = useState("");
   const { menuType } = useSelector((state) => state.auth);
+  const [fieldId, setFieldId] = useState();
 
   // get table lists
   const getTableList = async () => {
@@ -56,6 +57,7 @@ export const GridColumn = () => {
         const foreignTables = res.data?.data?.foreignTables?.map((item) => {
           return {
             tableName: item?.table_name,
+            dropdownField: "",
             fieldList: item?.attributes?.map((attribute) => {
               return {
                 fieldName: attribute?.attribute_name,
@@ -94,6 +96,15 @@ export const GridColumn = () => {
     }
 
     for (let i = 0; i < values?.query_tables?.length; i++) {
+      if (
+        (!values?.query_tables[i]?.dropdownField &&
+          values?.query_tables[i]?.tableName != tableName) ||
+        (values?.query_tables[i]?.dropdownField == "" &&
+          values?.query_tables[i]?.tableName != tableName)
+      ) {
+        errors[`query_tables.${i}.dropdownField`] =
+          "dropdown Label name required";
+      }
       for (let j = 0; j < values?.query_tables[i]?.fieldList?.length; j++) {
         if (
           !values?.query_tables[i]?.fieldList[j]?.columnName ||
@@ -227,6 +238,9 @@ export const GridColumn = () => {
                               <th scope="col">#</th>
                               <th scope="col">Field</th>
                               <th scope="col">Column Name</th>
+                              {table?.tableName == tableName ? null : (
+                                <th scope="col">Dropdown Label</th>
+                              )}
                             </tr>
                           </thead>
                           <tbody>
@@ -261,6 +275,44 @@ export const GridColumn = () => {
                                       </div>
                                     )}
                                   </td>
+
+                                  {table?.tableName == tableName ? null : (
+                                    <th scope="row">
+                                      <label className="radio radio-rounded">
+                                        <input
+                                          type="radio"
+                                          onClick={() => {
+                                            setFieldId(i);
+                                          }}
+                                          onChange={(e) => {
+                                            setFieldValue(
+                                              `query_tables.${tabIndex}.dropdownField`,
+                                              item?.fieldName
+                                            );
+                                          }}
+                                          defaultChecked={
+                                            table.dropdownField ==
+                                              item.fieldName && fieldId == i
+                                              ? true
+                                              : false
+                                          }
+                                          name={`query_tables.${tabIndex}.dropdownField`}
+                                        />
+                                        <span></span>
+                                      </label>
+                                      {errors[
+                                        `query_tables.${tabIndex}.dropdownField`
+                                      ] && (
+                                        <div className="text-danger">
+                                          {
+                                            errors[
+                                              `query_tables.${tabIndex}.dropdownField`
+                                            ]
+                                          }
+                                        </div>
+                                      )}
+                                    </th>
+                                  )}
                                 </tr>
                               ))}
                           </tbody>
