@@ -16,6 +16,7 @@ const UniTable = ({
   setSelectedPropsKeys,
   setSelectedPropsValue,
   handleEditButton,
+  handleDeleteButton,
 }) => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
@@ -161,7 +162,7 @@ const UniTable = ({
         </button>
         <button
           onClick={() => {
-            console.log({ row });
+            handleDeleteButton(row);
           }}
           className="btn btn-icon btn-light btn-hover-danger btn-sm mx-3"
         >

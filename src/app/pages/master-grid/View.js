@@ -4,6 +4,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import UniTable from "../../../_metronic/table/UniTable";
 import { LoadingDialog } from "../../../_metronic/_partials/controls/LoadingDialog";
 import API from "../../helpers/devApi";
+import { swalConfirm, swalError, swalSuccess } from "../../helpers/swal";
 
 const View = ({ slug_name, slug_type }) => {
   const history = useHistory();
@@ -20,6 +21,7 @@ const View = ({ slug_name, slug_type }) => {
   const [headers, setHeaders] = useState([]);
   const [allData, setAllData] = useState([]);
   const [tableName, setTableName] = useState("");
+  const [deleteAPi, setDeleteApi] = useState("");
 
   const pathname = window.location.pathname;
   const search = window.location.search;
@@ -42,6 +44,32 @@ const View = ({ slug_name, slug_type }) => {
     Object.keys(row).forEach((key, index) => {
       if (row[key] == row[tableName]) {
         history.push(`${base}${query}=update&id=${row[tableName]}`);
+      }
+    });
+  };
+
+  // handle delete button
+  const handleDeleteButton = async (row) => {
+    console.log({ deleteAPi });
+    Object.keys(row).forEach((key, index) => {
+      if (row[key] == row[tableName]) {
+        swalConfirm().then(async (res) => {
+          if (res.isConfirmed) {
+            await API.delete(`/${deleteAPi}/${row[tableName]}`)
+              .then(async (res) => {
+                if (res.data?.success) {
+                  swalSuccess(res.data?.message);
+                } else {
+                  swalError("something went wrong");
+                }
+                await getGridData(slug_name, slug_type);
+              })
+              .catch((error) => {
+                console.log(error);
+                swalError("something went wrong");
+              });
+          }
+        });
       }
     });
   };
@@ -79,6 +107,7 @@ const View = ({ slug_name, slug_type }) => {
             let gridApi = values?.grid_api?.split("v1")[1];
             let apiArr = values?.grid_api?.split("?")[0]?.split("/");
             setTableName(`${apiArr[apiArr?.length - 1]}__id`);
+            setDeleteApi(`${apiArr[apiArr?.length - 1]}`);
             await getEntities(gridApi);
             await getAllData(gridApi);
             setGridColumns(arr);
@@ -183,6 +212,7 @@ const View = ({ slug_name, slug_type }) => {
             setSelectedPropsKeys={setSelectedPropsKeys}
             setSelectedPropsValue={setSelectedPropsValue}
             handleEditButton={handleEditButton}
+            handleDeleteButton={handleDeleteButton}
           />
         </div>
       )}
