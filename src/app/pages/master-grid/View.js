@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { CSVLink } from "react-csv";
+import { useHistory, useLocation } from "react-router-dom";
 import UniTable from "../../../_metronic/table/UniTable";
 import { LoadingDialog } from "../../../_metronic/_partials/controls/LoadingDialog";
 import API from "../../helpers/devApi";
 
 const View = ({ slug_name, slug_type }) => {
+  const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [gridColumns, setGridColumns] = useState([]);
   const [entities, setEntities] = useState([]);
@@ -17,13 +19,32 @@ const View = ({ slug_name, slug_type }) => {
   const [selectedPropValue, setSelectedPropsValue] = useState();
   const [headers, setHeaders] = useState([]);
   const [allData, setAllData] = useState([]);
+  const [tableName, setTableName] = useState("");
+
+  const pathname = window.location.pathname;
+  const search = window.location.search;
 
   const onChange = (pagination, filters, sorter, extra) => {
     console.log("params", pagination, filters, sorter, extra);
   };
 
-  console.log({ gridColumns });
-  console.log({ entities });
+  // console.log({ gridColumns });
+  // console.log({ entities });
+
+  // handle edit button
+  const handleEditButton = (row) => {
+    let path = pathname?.split("/");
+    path.pop();
+    path.push("update");
+    const base = path.join("/");
+    const query = search?.split("=grid")[0];
+
+    Object.keys(row).forEach((key, index) => {
+      if (row[key] == row[tableName]) {
+        history.push(`${base}${query}=update&id=${row[tableName]}`);
+      }
+    });
+  };
 
   // get grid data
   const getGridData = async (slug_name, slug_type) => {
@@ -41,6 +62,8 @@ const View = ({ slug_name, slug_type }) => {
             let arr = [];
             let headers = [];
 
+            console.log({ grid_arr });
+
             let data = grid_arr?.forEach((element) => {
               return element?.fieldList?.forEach((field) => {
                 if (field?.include == true) {
@@ -54,6 +77,8 @@ const View = ({ slug_name, slug_type }) => {
             });
 
             let gridApi = values?.grid_api?.split("v1")[1];
+            let apiArr = values?.grid_api?.split("?")[0]?.split("/");
+            setTableName(`${apiArr[apiArr?.length - 1]}__id`);
             await getEntities(gridApi);
             await getAllData(gridApi);
             setGridColumns(arr);
@@ -157,6 +182,7 @@ const View = ({ slug_name, slug_type }) => {
             totalPage={totalPage}
             setSelectedPropsKeys={setSelectedPropsKeys}
             setSelectedPropsValue={setSelectedPropsValue}
+            handleEditButton={handleEditButton}
           />
         </div>
       )}

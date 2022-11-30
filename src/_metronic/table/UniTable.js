@@ -15,6 +15,7 @@ const UniTable = ({
   totalPage,
   setSelectedPropsKeys,
   setSelectedPropsValue,
+  handleEditButton,
 }) => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
@@ -147,7 +148,7 @@ const UniTable = ({
       <>
         <button
           onClick={() => {
-            console.log({ row });
+            handleEditButton(row);
           }}
           className="btn btn-icon btn-light btn-hover-primary btn-sm mr-3"
         >
