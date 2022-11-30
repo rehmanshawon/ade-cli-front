@@ -50,7 +50,6 @@ const View = ({ slug_name, slug_type }) => {
 
   // handle delete button
   const handleDeleteButton = async (row) => {
-    console.log({ deleteAPi });
     Object.keys(row).forEach((key, index) => {
       if (row[key] == row[tableName]) {
         swalConfirm().then(async (res) => {

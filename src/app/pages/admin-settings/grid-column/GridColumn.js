@@ -49,7 +49,7 @@ export const GridColumn = () => {
               fieldType: item?.attribute_type,
               foreignKey: item?.foreignKey == null ? false : item?.foreignKey,
               foreign_table_id: item?.foreign_table_id,
-              include: false,
+              include: true,
             };
           }),
         };
@@ -65,7 +65,7 @@ export const GridColumn = () => {
                 fieldType: item?.attribute_type,
                 foreignKey: item?.foreignKey == null ? false : item?.foreignKey,
                 foreign_table_id: item?.foreign_table_id,
-                include: false,
+                include: true,
               };
             }),
           };
@@ -247,73 +247,77 @@ export const GridColumn = () => {
                             {table.fieldList &&
                               table.fieldList.length > 0 &&
                               table.fieldList.map((item, i) => (
-                                <tr key={i}>
-                                  <th scope="row">
-                                    <Field
-                                      type="checkbox"
-                                      name={`query_tables.${tabIndex}.fieldList.${i}.include`}
-                                    />
-                                  </th>
-                                  <td>{item.fieldName}</td>
-                                  <td>
-                                    <Field
-                                      name={`query_tables.${tabIndex}.fieldList.${i}.columnName`}
-                                      component={Input}
-                                      placeholder="Enter Column Name"
-                                      label=""
-                                      value={item.columnName ?? ""}
-                                    />
-                                    {errors[
-                                      `query_tables.${tabIndex}.fieldList.${i}.columnName`
-                                    ] && (
-                                      <div className="text-danger">
-                                        {
-                                          errors[
-                                            `query_tables.${tabIndex}.fieldList.${i}.columnName`
-                                          ]
-                                        }
-                                      </div>
-                                    )}
-                                  </td>
-
-                                  {table?.tableName == tableName ? null : (
-                                    <th scope="row">
-                                      <label className="radio radio-rounded">
-                                        <input
-                                          type="radio"
-                                          onClick={() => {
-                                            setFieldId(i);
-                                          }}
-                                          onChange={(e) => {
-                                            setFieldValue(
-                                              `query_tables.${tabIndex}.dropdownField`,
-                                              item?.fieldName
-                                            );
-                                          }}
-                                          defaultChecked={
-                                            table.dropdownField ==
-                                              item.fieldName && fieldId == i
-                                              ? true
-                                              : false
-                                          }
-                                          name={`query_tables.${tabIndex}.dropdownField`}
+                                <Fragment key={i}>
+                                  {item?.fieldName != "id" && (
+                                    <tr>
+                                      <th scope="row">
+                                        <Field
+                                          type="checkbox"
+                                          name={`query_tables.${tabIndex}.fieldList.${i}.include`}
                                         />
-                                        <span></span>
-                                      </label>
-                                      {errors[
-                                        `query_tables.${tabIndex}.dropdownField`
-                                      ] && (
-                                        <div className="text-danger">
-                                          {
-                                            errors[
-                                              `query_tables.${tabIndex}.dropdownField`
-                                            ]
-                                          }
-                                        </div>
+                                      </th>
+                                      <td>{item.fieldName}</td>
+                                      <td>
+                                        <Field
+                                          name={`query_tables.${tabIndex}.fieldList.${i}.columnName`}
+                                          component={Input}
+                                          placeholder="Enter Column Name"
+                                          label=""
+                                          value={item.columnName ?? ""}
+                                        />
+                                        {errors[
+                                          `query_tables.${tabIndex}.fieldList.${i}.columnName`
+                                        ] && (
+                                          <div className="text-danger">
+                                            {
+                                              errors[
+                                                `query_tables.${tabIndex}.fieldList.${i}.columnName`
+                                              ]
+                                            }
+                                          </div>
+                                        )}
+                                      </td>
+
+                                      {table?.tableName == tableName ? null : (
+                                        <th scope="row">
+                                          <label className="radio radio-rounded">
+                                            <input
+                                              type="radio"
+                                              onClick={() => {
+                                                setFieldId(i);
+                                              }}
+                                              onChange={(e) => {
+                                                setFieldValue(
+                                                  `query_tables.${tabIndex}.dropdownField`,
+                                                  item?.fieldName
+                                                );
+                                              }}
+                                              defaultChecked={
+                                                table.dropdownField ==
+                                                  item.fieldName && fieldId == i
+                                                  ? true
+                                                  : false
+                                              }
+                                              name={`query_tables.${tabIndex}.dropdownField`}
+                                            />
+                                            <span></span>
+                                          </label>
+                                          {errors[
+                                            `query_tables.${tabIndex}.dropdownField`
+                                          ] && (
+                                            <div className="text-danger">
+                                              {
+                                                errors[
+                                                  `query_tables.${tabIndex}.dropdownField`
+                                                ]
+                                              }
+                                            </div>
+                                          )}
+                                        </th>
                                       )}
-                                    </th>
+                                    </tr>
                                   )}
-                                </tr>
+                                </Fragment>
                               ))}
                           </tbody>
                         </table>

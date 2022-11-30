@@ -179,11 +179,13 @@ const UniTable = ({
 
   columns.push(actions);
 
+  let col = columns?.filter((item) => item?.title != "id");
+
   return (
     <Fragment>
       <Table
         className="table table-head-custom table-head-bg table-borderless table-vertical-center"
-        columns={columns}
+        columns={col}
         dataSource={data}
         onChange={onChange}
         pagination={false}
