@@ -119,8 +119,11 @@ export default function UserFeature() {
                           <option>Select Role</option>
                           {userRole.length > 0 &&
                             userRole.map((data) => (
-                              <option key={data.id} value={data.id}>
-                                {data.role_name}
+                              <option
+                                key={data.sys_roles__id}
+                                value={data.sys_roles__id}
+                              >
+                                {data.sys_roles__role_name}
                               </option>
                             ))}
                           {userRole.length < 1 && (
@@ -154,7 +157,7 @@ export default function UserFeature() {
                     <div className="col-md-4 mb-4">
                       <Form.Group controlId="exampleForm.ControlSelect1">
                         <Form.Label>Select System Features</Form.Label>
-
+                        {console.log({ userFeature })}
                         <Select
                           mode="multiple"
                           allowClear
@@ -163,7 +166,7 @@ export default function UserFeature() {
                           value={systemFeatureId}
                           onChange={(value) => setSystemFeatureId(value)}
                         >
-                          {userFeature.map((item) => (
+                          {userFeature?.sys_menus?.map((item) => (
                             <Option key={item.id} value={item.id}>
                               {item.menu_name}
                             </Option>

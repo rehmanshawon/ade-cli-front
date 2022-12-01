@@ -1,12 +1,10 @@
 import { Field, Form, Formik } from "formik";
-import React, { useEffect } from "react";
-import { useState } from "react";
+import isVarName from "is-var-name";
+import React, { useEffect, useState } from "react";
+import { TagsInput } from "react-tag-input-component";
 import { Input } from "../../../../_metronic/_partials/controls";
 import API from "../../../helpers/devApi";
-import { TagsInput } from "react-tag-input-component";
 import { swalConfirm, swalError, swalSuccess } from "../../../helpers/swal";
-import isVarName from "is-var-name";
-import pluralize from "pluralize";
 
 const _init = {
   tableName: "",
@@ -89,10 +87,15 @@ const CreateTable = () => {
           actions.resetForm();
           swalSuccess("Created Table");
         } else {
-          swalError("something went wrong");
+          swalError(
+            res?.message?.length > 0
+              ? res?.message?.toString()
+              : "something went wrong"
+          );
         }
       })
       .catch((error) => {
+        console.log(error);
         swalError("something went wrong");
       });
   };

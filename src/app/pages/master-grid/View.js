@@ -5,6 +5,7 @@ import UniTable from "../../../_metronic/table/UniTable";
 import { LoadingDialog } from "../../../_metronic/_partials/controls/LoadingDialog";
 import API from "../../helpers/devApi";
 import { swalConfirm, swalError, swalSuccess } from "../../helpers/swal";
+import pluralize from "pluralize";
 
 const View = ({ slug_name, slug_type }) => {
   const history = useHistory();
@@ -83,13 +84,10 @@ const View = ({ slug_name, slug_type }) => {
         .then(async (res) => {
           if (res.data?.success) {
             const values = res.data?.data;
-            console.log({ values });
             const grid_params = values?.grid_params;
             const grid_arr = JSON.parse(grid_params);
             let arr = [];
             let headers = [];
-
-            console.log({ grid_arr });
 
             let data = grid_arr?.forEach((element) => {
               return element?.fieldList?.forEach((field) => {
@@ -178,9 +176,7 @@ const View = ({ slug_name, slug_type }) => {
       <div className="card-header border-0 p-0 d-flex justify-content-between">
         <h3 className="card-title align-items-start flex-column">
           <span className="card-label font-weight-bolder text-dark d-block text-capitalize">
-            {slug_name?.split("_")?.map((item, i) => (
-              <span key={i}>{item} </span>
-            ))}
+            <span>{pluralize(tableName?.split("__id")[0])}</span>
           </span>
           <span className="text-muted font-weight-bold font-size-sm">
             Total {totalPage ?? 0}

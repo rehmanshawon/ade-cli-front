@@ -15,7 +15,10 @@ export default function UserSettingsPage() {
             to="/user-setting/user-feature"
           />
         }
-        <ContentRoute path="/user-setting" component={UserFeature} />
+        <ContentRoute
+          path="/user-setting/user-feature"
+          component={UserFeature}
+        />
       </Switch>
     </Suspense>
   );

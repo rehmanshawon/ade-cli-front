@@ -8,11 +8,10 @@ import * as Yup from "yup";
 
 const Update = ({ slug_name, slug_type, id }) => {
   const [loading, setLoading] = useState(false);
-  const [createAPI, setCreateAPI] = useState("");
+  const [updateAPI, setUpdateAPI] = useState("");
   const [formsData, setFormsData] = useState([]);
   const [entityData, setEntityData] = useState({});
-
-  console.log({ createAPI });
+  const [tableName, setTableName] = useState("");
 
   // Validation schema
   const validationSchema = Yup.object().shape({
@@ -34,13 +33,13 @@ const Update = ({ slug_name, slug_type, id }) => {
       )
         .then(async (res) => {
           if (res.data?.success) {
-            let createAPI = res.data?.data?.update_api?.split("v1")[1];
+            let updateAPI = res.data?.data?.update_api?.split("v1")[1];
             let formData = res.data?.data?.update_params
               ? JSON.parse(res.data?.data?.update_params)
               : [];
 
             let values;
-            await getGridFindOne(createAPI, id).then((res) => {
+            await getGridFindOne(updateAPI, id).then((res) => {
               values = res;
             });
             setFormsData(formData);
@@ -50,8 +49,11 @@ const Update = ({ slug_name, slug_type, id }) => {
               payload[element?.fieldName] = values[element?.fieldName];
             });
 
+            let apiArr = res.data?.data?.update_api?.split("/");
+            setTableName(`${apiArr[apiArr?.length - 1]}`);
+
             setEntityData(payload);
-            setCreateAPI(createAPI);
+            setUpdateAPI(updateAPI);
             setLoading(false);
           }
         })
@@ -64,7 +66,7 @@ const Update = ({ slug_name, slug_type, id }) => {
   };
 
   const handleUpdateForm = async (values) => {
-    await API.patch(`${createAPI}/${id}`, values)
+    await API.patch(`${updateAPI}/${id}`, values)
       .then((res) => {
         if (res.data?.success) {
           swalSuccess(res.data?.message);
@@ -86,9 +88,7 @@ const Update = ({ slug_name, slug_type, id }) => {
       <div className="card-header border-0 p-0 d-flex justify-content-between">
         <h3 className="card-title align-items-start flex-column">
           <span className="card-label font-weight-bolder text-dark d-block text-capitalize">
-            {slug_name?.split("_")?.map((item, i) => (
-              <span key={i}>{item} Update</span>
-            ))}
+            <span>{tableName} Update</span>
           </span>
         </h3>
       </div>

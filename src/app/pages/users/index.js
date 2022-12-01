@@ -72,31 +72,8 @@ export const UserRoles = () => {
       },
       {
         Header: "role name",
-        accessor: "role_name",
+        accessor: "sys_roles__role_name",
         paddingLeft: "0px",
-      },
-      {
-        Header: "created at",
-        accessor: (row, index) => (
-          <div>{moment(row.original?.created_at).format("DD-MM-YYYY")}</div>
-        ),
-        paddingLeft: "0px",
-      },
-      {
-        Header: "Status",
-        accessor: "is_active",
-        width: 100,
-        minWidth: 100,
-        paddingLeft: "0px",
-        Cell: ({ row }) => (
-          <span
-            className={`badge ${
-              row.original.is_active == true ? "badge-success" : "badge-warning"
-            }`}
-          >
-            {row.original.is_active == true ? "Active" : "Inactive"}
-          </span>
-        ),
       },
       {
         Header: "Action",

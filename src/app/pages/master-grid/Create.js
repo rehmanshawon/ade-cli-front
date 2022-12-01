@@ -13,6 +13,7 @@ const Create = ({ slug_name, slug_type }) => {
   const [createAPI, setCreateAPI] = useState("");
   const [formsData, setFormsData] = useState([]);
   const [entityData, setEntityData] = useState({});
+  const [tableName, setTableName] = useState("");
 
   // Validation schema
   const validationSchema = Yup.object().shape({
@@ -39,6 +40,9 @@ const Create = ({ slug_name, slug_type }) => {
               payload[element?.fieldName] =
                 element?.fieldType == "string" ? "" : undefined;
             });
+
+            let apiArr = res.data?.data?.create_api?.split("/");
+            setTableName(`${apiArr[apiArr?.length - 1]}`);
 
             setEntityData(payload);
             setCreateAPI(createAPI);
@@ -76,9 +80,7 @@ const Create = ({ slug_name, slug_type }) => {
       <div className="card-header border-0 p-0 d-flex justify-content-between">
         <h3 className="card-title align-items-start flex-column">
           <span className="card-label font-weight-bolder text-dark d-block text-capitalize">
-            {slug_name?.split("_")?.map((item, i) => (
-              <span key={i}>{item} Create</span>
-            ))}
+            <span>{tableName} Create</span>
           </span>
         </h3>
       </div>
