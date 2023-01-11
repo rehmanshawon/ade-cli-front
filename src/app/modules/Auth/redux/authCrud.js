@@ -18,9 +18,9 @@ export async function getModuleList() {
   return await API.get(MODULE_URL);
 }
 
-export async function getUserByToken() {
+export async function getUserByToken(id) {
   // Authorization head should be fulfilled in interceptor.
-  return await API.get(ME_URL);
+  return await API.get(`${ME_URL}/${id}`);
 }
 
 export async function getMenuByModule(menuType) {
