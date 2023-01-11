@@ -8,7 +8,7 @@ export default function BasePage() {
 
   // pages lists
   const UserSettingsPage = lazy(() => import("./pages/user-settings"));
-  const UserRolePage = lazy(() => import("./pages/users"));
+  const UserRolePage = lazy(() => import("./pages/user-settings/roles"));
   const AdminSettingsPage = lazy(() => import("./pages/admin-settings"));
   const MasterGridPage = lazy(() => import("./pages/master-grid"));
 
@@ -17,8 +17,7 @@ export default function BasePage() {
       <Switch>
         {/* {<Redirect exact from="/" to="/dashboard" />} */}
         <Route exact path="/dashboard" component={AllDashboardPages} />
-        <Route path="/user-setting/user-feature" component={UserSettingsPage} />
-        <Route path="/user-setting/roles" component={UserRolePage} />
+        <Route path="/user-setting" component={UserSettingsPage} />
         <Route path="/admin-settings" component={AdminSettingsPage} />
 
         <Route path="*/masterdata" component={MasterGridPage} />

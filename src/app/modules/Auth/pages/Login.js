@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { connect, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -19,7 +19,8 @@ const initialValues = {
 
 function Login(props) {
   const { intl } = props;
-  const { authToken, loading, error } = useSelector((state) => state.auth);
+  const { authToken, loading } = useSelector((state) => state.auth);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (authToken) {
@@ -57,15 +58,15 @@ function Login(props) {
     validationSchema: LoginSchema,
     onSubmit: (values, { resetForm, setSubmitting, setStatus }) => {
       login(values.email, values.password)
-        .then(({ data: { data } }) => {
-          props.login(data?.access_token);
+        .then((res) => {
+          if (res?.data?.success) {
+            props.login(res?.data?.data?.access_token);
+          } else {
+            setError(res.message);
+          }
         })
         .catch(() => {
-          setStatus(
-            intl.formatMessage({
-              id: "AUTH.VALIDATION.INVALID_LOGIN",
-            })
-          );
+          setError("something went wrong");
         })
         .finally(() => {
           setSubmitting(false);

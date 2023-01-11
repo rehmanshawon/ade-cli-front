@@ -17,7 +17,7 @@ const getFieldCSSClasses = (touched, errors) => {
 
 export function Select({
   label,
-  withFeedbackLabel = true,
+  withFeedbackLabel = false,
   type = "text",
   customFeedbackLabel,
   children,
