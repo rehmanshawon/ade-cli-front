@@ -2,6 +2,7 @@ import React, { Fragment, lazy, Suspense } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { LayoutSplashScreen } from "../_metronic/layout";
 import AllDashboardPages from "./pages/dashboard";
+import Profile from "./pages/profile/Profile";
 
 export default function BasePage() {
   // console.log(userRole);
@@ -16,7 +17,8 @@ export default function BasePage() {
     <Suspense fallback={<LayoutSplashScreen />}>
       <Switch>
         {/* {<Redirect exact from="/" to="/dashboard" />} */}
-        <Route exact path="/dashboard" component={AllDashboardPages} />
+        <Route exact path="/" component={AllDashboardPages} />
+        <Route exact path="/profile" component={Profile} />
         <Route path="/user-setting" component={UserSettingsPage} />
         <Route path="/admin-settings" component={AdminSettingsPage} />
 

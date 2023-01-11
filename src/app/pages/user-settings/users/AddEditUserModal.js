@@ -136,6 +136,7 @@ export const AddEditUserModal = ({
                   <Field
                     name="password"
                     component={Input}
+                    type="password"
                     placeholder="Enter password"
                     label="Password"
                     value={values.password ?? ""}
