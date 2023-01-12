@@ -4,7 +4,7 @@ import SVG from "react-inlinesvg";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { toAbsoluteUrl } from "../../../../_helpers";
-import { logout } from "../../../../../app/modules/Auth/redux/authReducer";
+import { actions } from "../../../../../app/modules/Auth/redux/authRedux";
 
 export function QuickUser() {
   const history = useHistory();
@@ -15,7 +15,7 @@ export function QuickUser() {
     if (toggle) {
       toggle.click();
     }
-    dispatch(logout());
+    dispatch(actions.logout());
     history.push("/");
   };
 

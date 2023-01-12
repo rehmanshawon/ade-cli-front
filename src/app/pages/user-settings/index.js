@@ -2,7 +2,9 @@ import React, { Suspense } from "react";
 import { Redirect, Switch } from "react-router-dom";
 import { ContentRoute } from "../../../_metronic/layout";
 import { SplashScreen } from "../../../_metronic/_partials/controls";
+import UserRoles from "./roles";
 import UserFeature from "./UserFeature";
+import { Users } from "./users";
 
 export default function UserSettingsPage() {
   return (
@@ -16,9 +18,13 @@ export default function UserSettingsPage() {
           />
         }
         <ContentRoute
+          exact
           path="/user-setting/user-feature"
           component={UserFeature}
         />
+        <ContentRoute exact path="/user-setting/roles" component={UserRoles} />
+
+        <ContentRoute exact path="/user-setting/users" component={Users} />
       </Switch>
     </Suspense>
   );

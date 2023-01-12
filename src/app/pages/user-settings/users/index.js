@@ -1,13 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
-import API from "../../helpers/devApi";
-import TableComponent from "../../../_metronic/table/TableComponent";
+import API from "../../../helpers/devApi";
+import TableComponent from "../../../../_metronic/table/TableComponent";
 import moment from "moment";
-import { AddEditRoleModal } from "./AddEdiRoleModal";
+import { AddEditUserModal } from "./AddEditUserModal";
 import SVG from "react-inlinesvg";
-import { swalConfirm, swalError, swalSuccess } from "../../helpers/swal";
-import { toAbsoluteUrl } from "../../../_metronic/_helpers";
+import { swalConfirm, swalError, swalSuccess } from "../../../helpers/swal";
+import { toAbsoluteUrl } from "../../../../_metronic/_helpers";
 
-export const UserRoles = () => {
+export const Users = () => {
   const [entities, setEntities] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -15,10 +15,11 @@ export const UserRoles = () => {
 
   // get list
   const getEntityList = async () => {
-    await API.get("/sys_roles")
+    await API.get("/sys_users")
       .then((res) => {
+        console.log({ res });
         if (res.data.success) {
-          setEntities(res.data?.data?.sys_roles);
+          setEntities(res.data?.data?.sys_users);
         }
       })
       .catch((error) => {
@@ -71,47 +72,19 @@ export const UserRoles = () => {
         width: 50,
       },
       {
-        Header: "role name",
-        accessor: "sys_roles__role_name",
+        Header: "user name",
+        accessor: "sys_users__user_name",
         paddingLeft: "0px",
       },
       {
-        Header: "Action",
+        Header: "email",
+        accessor: "sys_users__email",
         paddingLeft: "0px",
-        width: 160,
-        minWidth: 160,
-        Cell: ({ row }) => (
-          <>
-            <button
-              onClick={() => {
-                handleEdit(row.original);
-              }}
-              className="btn btn-icon btn-light btn-hover-primary btn-sm mr-3"
-            >
-              <span className="svg-icon svg-icon-md svg-icon-primary">
-                <SVG
-                  title="Edit"
-                  src={toAbsoluteUrl(
-                    "/media/svg/icons/Communication/Write.svg"
-                  )}
-                />
-              </span>
-            </button>
-            <button
-              onClick={() => {
-                handleDelete(row.original?.id);
-              }}
-              className="btn btn-icon btn-light btn-hover-danger btn-sm mx-3"
-            >
-              <span className="svg-icon svg-icon-md svg-icon-danger">
-                <SVG
-                  title="Delete"
-                  src={toAbsoluteUrl("/media/svg/icons/General/Trash.svg")}
-                />
-              </span>
-            </button>
-          </>
-        ),
+      },
+      {
+        Header: "role",
+        accessor: "sys_role__role_name",
+        paddingLeft: "0px",
       },
     ],
     [entities]
@@ -127,12 +100,12 @@ export const UserRoles = () => {
         data={data ?? []}
         columns={columns}
         lists={entities ?? []}
-        title="User Role List"
+        title="User List"
         hideAddButton={false}
         setShowAddDataModal={setShowModal}
       />
 
-      <AddEditRoleModal
+      <AddEditUserModal
         setShowDetails={setShowModal}
         showDetails={showModal}
         getEntityList={getEntityList}
@@ -145,4 +118,4 @@ export const UserRoles = () => {
   );
 };
 
-export default UserRoles;
+export default Users;

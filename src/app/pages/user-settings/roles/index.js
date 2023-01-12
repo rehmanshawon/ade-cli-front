@@ -1,13 +1,13 @@
-import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
-import SVG from "react-inlinesvg";
-import TableComponent from "../../../../_metronic/table/TableComponent";
-import { toAbsoluteUrl } from "../../../../_metronic/_helpers";
 import API from "../../../helpers/devApi";
+import TableComponent from "../../../../_metronic/table/TableComponent";
+import moment from "moment";
+import { AddEditRoleModal } from "./AddEdiRoleModal";
+import SVG from "react-inlinesvg";
 import { swalConfirm, swalError, swalSuccess } from "../../../helpers/swal";
-import { AddEditModulesModal } from "./AddEditModulesModal";
+import { toAbsoluteUrl } from "../../../../_metronic/_helpers";
 
-export const Modules = () => {
+export const UserRoles = () => {
   const [entities, setEntities] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -15,11 +15,10 @@ export const Modules = () => {
 
   // get list
   const getEntityList = async () => {
-    await API.get("/sys_modules")
+    await API.get("/sys_roles")
       .then((res) => {
         if (res.data.success) {
-          setEntities(res.data?.data?.sys_modules);
-          //   dispatch(setModules(res.data.data.sys_modules ?? []));
+          setEntities(res.data?.data?.sys_roles);
         }
       })
       .catch((error) => {
@@ -38,7 +37,7 @@ export const Modules = () => {
   const handleDelete = async (id) => {
     swalConfirm().then(async (res) => {
       if (res.isConfirmed) {
-        await API.delete(`/sys_modules/${id}`)
+        await API.delete(`/sys_roles/${id}`)
           .then(async (res) => {
             if (res.data.success) {
               swalSuccess(res.data.data?.message);
@@ -72,20 +71,8 @@ export const Modules = () => {
         width: 50,
       },
       {
-        Header: "module name",
-        accessor: "module_name",
-        paddingLeft: "0px",
-      },
-      {
-        Header: "module url",
-        accessor: "module_url",
-        paddingLeft: "0px",
-      },
-      {
-        Header: "created at",
-        accessor: (row, index) => (
-          <div>{moment(row.original?.created_at).format("DD-MM-YYYY")}</div>
-        ),
+        Header: "role name",
+        accessor: "sys_roles__role_name",
         paddingLeft: "0px",
       },
       {
@@ -140,12 +127,12 @@ export const Modules = () => {
         data={data ?? []}
         columns={columns}
         lists={entities ?? []}
-        title="Module List"
+        title="User Role List"
         hideAddButton={false}
         setShowAddDataModal={setShowModal}
       />
 
-      <AddEditModulesModal
+      <AddEditRoleModal
         setShowDetails={setShowModal}
         showDetails={showModal}
         getEntityList={getEntityList}
@@ -158,4 +145,4 @@ export const Modules = () => {
   );
 };
 
-export default Modules;
+export default UserRoles;

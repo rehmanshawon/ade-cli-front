@@ -157,7 +157,6 @@ export default function UserFeature() {
                     <div className="col-md-4 mb-4">
                       <Form.Group controlId="exampleForm.ControlSelect1">
                         <Form.Label>Select System Features</Form.Label>
-                        {console.log({ userFeature })}
                         <Select
                           mode="multiple"
                           allowClear

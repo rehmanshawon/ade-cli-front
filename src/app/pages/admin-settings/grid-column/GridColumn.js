@@ -74,7 +74,10 @@ export const GridColumn = () => {
           data.push(element);
         });
 
+        const tab = tableList.find((item) => item.id == id);
         setFieldValue("query_tables", data);
+        setFieldValue("menu_name", tab?.table_name);
+        setFieldValue("menu_url", slugify(tab?.table_name));
       }
     });
   };

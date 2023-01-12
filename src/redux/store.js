@@ -1,13 +1,3 @@
-// import { configureStore } from "@reduxjs/toolkit";
-// import authReducer from "../app/modules/Auth/redux/authReducer";
-
-// export const store = configureStore({
-//   reducer: {
-//     auth: authReducer,
-
-//   },
-// });
-
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import createSagaMiddleware from "redux-saga";
 import { reduxBatch } from "@manaflair/redux-batch";

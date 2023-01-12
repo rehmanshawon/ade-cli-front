@@ -18,17 +18,16 @@ function AuthInit(props) {
 
   // We should request user by authToken before rendering the application
   useEffect(() => {
+    const user = authToken ? jwtDecode(authToken) : null;
+
     const requestUser = async () => {
       try {
-        if (!didRequest.current) {
-          const { data } = await getUserByToken();
+        if (!didRequest.current && user && Object.keys(user).length > 0) {
+          const { data } = await getUserByToken(user?.sub);
 
           if (data.success) {
-            localStorage.setItem(
-              "user",
-              JSON.stringify(data?.data?.sys_users[0])
-            );
-            dispatch(props.fulfillUser(data?.data?.sys_users[0]));
+            localStorage.setItem("user", JSON.stringify(data?.data));
+            dispatch(props.fulfillUser(data?.data));
           }
         }
       } catch (error) {
