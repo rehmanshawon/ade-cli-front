@@ -77,6 +77,7 @@ export const GridColumn = () => {
         const tab = tableList.find((item) => item.id == id);
         setFieldValue("query_tables", data);
         setFieldValue("menu_name", tab?.table_name);
+        setFieldValue("slug_name", slugify(tab?.table_name));
         setFieldValue("menu_url", slugify(tab?.table_name));
       }
     });
@@ -176,6 +177,7 @@ export const GridColumn = () => {
         >
           {({ handleSubmit, errors, values, setFieldValue, touched }) => (
             <Form>
+              {JSON.stringify(values)}
               <div className="row">
                 <div className="col-md-4 mb-3">
                   <label>Select Table</label>

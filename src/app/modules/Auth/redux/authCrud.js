@@ -30,5 +30,7 @@ export async function updateProfile(id, payload) {
 
 export async function getMenuByModule(menuType, roleId) {
   // Authorization head should be fulfilled in interceptor.
-  return await API.get(`${MENU_URL}?role_id=${roleId}&module_id=${menuType}`);
+  return await API.get(
+    `${MENU_URL}?role_id=${roleId}&module_id=${menuType}&active=1`
+  );
 }
