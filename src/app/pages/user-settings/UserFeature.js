@@ -139,11 +139,19 @@ export default function UserFeature() {
       ...new Map(data.map((item) => [item["id"], item])).values(),
     ];
 
-    await API.post(`/sys_menu_priviledge/`, uniqueObjArray)
+    const payload = uniqueObjArray?.map((item) => {
+      return {
+        menu_id: item?.menu_id,
+        module_id: item?.module_id,
+        role_id: item?.role_id,
+      };
+    });
+
+    await API.post(`/sys_menu_priviledge/`, payload)
       .then((res) => {
         if (res.data?.success) {
           swalSuccess();
-          getTreeMenu(uniqueObjArray[0].role_id, uniqueObjArray[0].module_id);
+          getTreeMenu(payload[0].role_id, payload[0].module_id);
         } else {
           swalError();
         }

@@ -15,29 +15,32 @@ export function AsideMenuList({ layoutProps }) {
       ? ` ${!hasSubmenu && "menu-item-active"} menu-item-open `
       : "";
   };
-  const { menu } = useSelector((state) => state.auth);
+  const { menu, user } = useSelector((state) => state.auth);
+
   const menuType =
     localStorage.getItem("menuType") &&
     JSON.parse(localStorage.getItem("menuType"));
+
   const dispatch = useDispatch();
   const menus = useMemo(() => menu ?? [], [menu ?? []]);
 
   const ordering = [...menus];
 
-  useEffect(() => {
-    const getMenu = async (menuType) => {
-      if (menuType?.id) {
-        await getMenuByModule(menuType?.id).then((res) => {
-          if (res.data.success) {
-            dispatch(actions.menu(res?.data?.data?.sys_menus));
-          }
-        });
-      }
-    };
-    if (menuType) {
-      getMenu(menuType);
+  const getMenu = async (menuTypeId, roleId) => {
+    if (menuTypeId && roleId) {
+      await getMenuByModule(menuTypeId, roleId).then((res) => {
+        if (res.data.success) {
+          dispatch(actions.menu(res?.data?.data));
+        }
+      });
     }
-  }, []);
+  };
+
+  useEffect(() => {
+    if (menuType?.id && user?.role_id) {
+      getMenu(menuType?.id, user?.role_id);
+    }
+  }, [menuType?.id, user?.role_id]);
 
   const renderMenuItem = (item) => {
     const { menu_name, menu_url, children, menu_icon_url, id, ...rest } = item;

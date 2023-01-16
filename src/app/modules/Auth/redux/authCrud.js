@@ -4,7 +4,7 @@ export const REGISTER_URL = `/auth/signup`;
 export const REQUEST_PASSWORD_URL = `/auth/forgot-password`;
 export const ME_URL = `/sys_users`;
 export const MODULE_URL = `/sys_modules`;
-export const MENU_URL = `/sys_menus`;
+export const MENU_URL = `/sys_menu_priviledge/menus`;
 
 export async function login(email, password) {
   return await API.post(LOGIN_URL, { email, password });
@@ -28,7 +28,7 @@ export async function updateProfile(id, payload) {
   return await API.patch(`${ME_URL}/${id}`, payload);
 }
 
-export async function getMenuByModule(menuType) {
+export async function getMenuByModule(menuType, roleId) {
   // Authorization head should be fulfilled in interceptor.
-  return await API.get(`${MENU_URL}?field=module_id&search=${menuType}`);
+  return await API.get(`${MENU_URL}?role_id=${roleId}&module_id=${menuType}`);
 }
